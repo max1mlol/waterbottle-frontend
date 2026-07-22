@@ -73,7 +73,7 @@ function VendorList() {
             <Routes>
                 <Route path="/" element={<Home />} />
                 console.log('VendorList')
-                <Route path="/Vendor" element={<Vendor />} />
+                <Route path="/Vendor/:id" element={<Vendor />} />
             </Routes>
         </>
     )
