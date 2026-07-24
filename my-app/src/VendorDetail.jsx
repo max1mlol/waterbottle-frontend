@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
-import {createBrowserRouter, useParams, Route, Router, RouterProvider} from "react-router-dom";
-import Vendors from "./components/Vendors.jsx";
-const router = createBrowserRouter([
-    {path: "/vendor/:id", element:<Vendors/>}
-])
+import {createBrowserRouter, useParams, Route, Router, RouterProvider, Routes} from "react-router-dom";
 
-export function Vendor() {
+function VendorDetail() {
     console.log("VENDOR LIST")
     const { id } = useParams();
     const [vendor, setVendor] = useState([])
@@ -17,7 +13,6 @@ export function Vendor() {
     }, [id])
     return(
         <>
-
             {vendor.map((item) => {
                 return <>
                     <pre>{JSON.stringify(item)}</pre>
@@ -25,5 +20,13 @@ export function Vendor() {
             })}
         </>
     )
-
 }
+
+export default VendorDetail;
+/*
+function VendorDetail() {
+    return (
+        <h1>vendor-detail</h1>
+    )
+}
+export default VendorDetail;*/
