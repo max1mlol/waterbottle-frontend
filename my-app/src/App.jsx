@@ -4,6 +4,7 @@ import { MantineProvider } from '@mantine/core';
 import Home from "./Home.jsx";
 import VendorList from "./VendorList.jsx";
 import VendorDetail from "./VendorDetail.jsx";
+import NotFound from "./NotFound.jsx";
 
 export default function App() {
     return (
@@ -13,6 +14,7 @@ export default function App() {
                     <Route exact path="/" element={<Home />} />
                     <Route path="/Vendor" element={<VendorList />} />
                     <Route path="/vendor/:id" element={<VendorDetail />} />
+                    <Route path="*" element={<NotFound />} />
                 </Routes>
             </BrowserRouter>
         </MantineProvider>
