@@ -6,6 +6,7 @@ import VendorList from "./VendorList.jsx";
 import VendorDetail from "./VendorDetail.jsx";
 import NotFound from "./NotFound.jsx";
 import NavBar from "./NavBar.jsx";
+import BottleList from "./BottleList.jsx";
 
 
 export default function App() {
@@ -16,7 +17,8 @@ export default function App() {
                 <Routes>
                     <Route exact path="/" element={<Home />} />
                     <Route path="/Vendor" element={<VendorList />} />
-                    <Route path="/vendor/:id" element={<VendorDetail />} />
+                    <Route path="/Vendor/:id" element={<VendorDetail />} />
+                    <Route path="/Bottle" element={<BottleList />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </BrowserRouter>

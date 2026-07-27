@@ -18,6 +18,10 @@ export default function NavBar() {
                     <a href="/vendor">Vendor</a>
 
                 </li>
+                <li>
+                    <a href="/bottle">Bottle</a>
+
+                </li>
             </ul>
         </nav>
     )

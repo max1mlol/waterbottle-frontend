@@ -37,24 +37,6 @@ function VendorDetail() {
             </Table>
         </>
     )
-/*
-    return(
-        <>
-            {vendorDetail.map((item) => {
-                return <>
-                    <pre>{JSON.stringify(item)}</pre>
-                </>
-            })}
-        </>
-    )
-*/
 }
 
 export default VendorDetail;
-/*
-function VendorDetail() {
-    return (
-        <h1>vendor-detail</h1>
-    )
-}
-export default VendorDetail;*/
