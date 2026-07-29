@@ -1,14 +1,32 @@
 import {useEffect, useState} from "react";
-import {Button, Table} from "@mantine/core";
+import {Button, Group, NativeSelect, NumberInput, Table, Text, TextInput} from "@mantine/core";
 import {Route, Routes, Link} from "react-router-dom";
+import Modal from "./Components/Modal.jsx"
+import {hasLength, isEmail, isInRange, isNotEmpty, isOneOf, isUrl, matches, useForm} from "@mantine/form";
+
 
 function VendorList(){
     const [vendorList, setVendorList] = useState([])
+    const [openModal, setOpenModal] = useState(false);
+
     useEffect(() => {
         fetch(`http://localhost:8080/vendors?page=0&pageSize=100`)
             .then(response => response.json())
             .then(result => setVendorList(result.data))
     }, [])
+    const handleSubmit = (values) => {
+        fetch("http://localhost:8080/vendors/", {method: "POST",   headers: {
+                "Content-Type": "application/json",
+            }, body: JSON.stringify(values),
+        })
+            .then(response => response.json())
+            .then(result => {
+                setVendorList((prev) => [...prev, result.data]);
+                setOpenModal(false);
+            })
+            .catch(error => console.log(error));
+
+    }
 
     const rows = vendorList.map((vendor) => (
         <Table.Tr key={vendor.id}>
@@ -19,9 +37,75 @@ function VendorList(){
             <Table.Td>{vendor.getContractEndDate}</Table.Td>
         </Table.Tr>
     ));
+
+    const form = useForm({
+        mode: 'uncontrolled',
+        initialValues: {
+            name: "",
+            registrationNumber: "",
+            contractSignedDate: "",
+            getContractEndDate: "",
+        },
+
+        validate: {
+            name: hasLength({ min: 2, max: 10 }, 'Name must be 2-10 characters long'),
+            registrationNumber: hasLength({ min: 2, max: 10 }, 'Registration Number must be 2-10 characters long'),
+            contractSignedDate: hasLength({ min: 2, max: 100 }, 'Contract Signed Date must be 2-10 characters long'),
+            getContractEndDate: hasLength({ min: 2, max: 100 }, 'Contract End Date must be 2-10 characters long'),
+        },
+    });
+
     return (
         <>
-            <Button>Create Vendor</Button>
+
+            <Button
+                className="createVendor"
+                onClick={() => {
+                    setOpenModal(true);
+                }}
+            >
+                Create Vendor
+            </Button>
+            {openModal &&
+                <Modal
+                    closeModal={setOpenModal}
+                    title="Create Vendor"
+                >
+                    <form onSubmit={form.onSubmit(handleSubmit)}>
+                        <TextInput
+                            label="Name"
+                            withAsterisk
+                            key={form.key('name')}
+                            {...form.getInputProps('name')}
+                        />
+                        <TextInput
+                            label="Registration Number"
+                            withAsterisk
+                            mt="md"
+                            key={form.key('registrationNumber')}
+                            {...form.getInputProps('registrationNumber')}
+                        />
+                        <TextInput
+                            label="Contract Signed Date"
+                            withAsterisk
+                            mt="md"
+                            key={form.key('contractSignedDate')}
+                            {...form.getInputProps('contractSignedDate')}
+                        />
+                        <TextInput
+                            label="Get Contract End Date"
+                            withAsterisk
+                            mt="md"
+                            key={form.key('getContractEndDate')}
+                            {...form.getInputProps('getContractEndDate')}
+                        />
+
+                        <Group justify="flex-end" mt="md">
+                            <Button type="submit">Create Vendor</Button>
+                        </Group>
+                    </form>
+                </Modal>
+            }
             <Table>
                 <Table.Thead>
                     <Table.Tr>

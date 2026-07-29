@@ -1,8 +1,26 @@
 import {useEffect, useState} from "react";
-import {Button, Table} from "@mantine/core";
+import {Button, Group, Table, TextInput} from "@mantine/core";
 import {Route, Routes, Link} from "react-router-dom";
+import {hasLength, useForm} from "@mantine/form";
+import Modal from "./Components/Modal.jsx";
 
 function BottleList(){
+    const [openModal, setOpenModal] = useState(false);
+
+    const handleSubmit = (values) => {
+        fetch("http://localhost:8080/water-bottles/",
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json", },
+                body: JSON.stringify(values),
+            })
+                .then(response => response.json())
+                .then(result => {
+                    setBottleList((prev) => [...prev, result.data]);
+                    setOpenModal(false);
+                })
+                .catch(error => console.log(error));
+    }
     const [bottleList, setBottleList] = useState([])
     useEffect(() => {
         fetch(`http://localhost:8080/water-bottles?page=0&pageSize=100`)
@@ -12,16 +30,81 @@ function BottleList(){
 
     const rows = bottleList.map((bottle) => (
         <Table.Tr key={bottle.id}>
-            <Table.Td><Link to={`/Bottle/${bottle.id}`}>{bottle.id}</Link></Table.Td>
+            <Table.Td>{bottle.id}</Table.Td>
             <Table.Td>{bottle.brand}</Table.Td>
             <Table.Td>{bottle.capacity}</Table.Td>
             <Table.Td>{bottle.barcode}</Table.Td>
             <Table.Td>{bottle.vendorId}</Table.Td>
         </Table.Tr>
     ));
+
+    const form = useForm({
+        mode: 'uncontrolled',
+        initialValues: {
+            vendorId: "",
+            brand: "",
+            capacity: "",
+            barcode: ""
+        },
+
+        validate: {
+            vendorId: hasLength({ min: 1, max: 10 }, 'Vendor Id must be 1-10 characters long'),
+            brand: hasLength({ min: 1, max: 10 }, 'Brand must be 1-10 characters long'),
+            capacity: hasLength({ min: 1, max: 100 }, 'Contract Signed Date must be 1-10 characters long'),
+            barcode: hasLength({ min: 2, max: 100 }, 'Contract End Date must be 2-10 characters long'),
+        },
+    });
     return (
         <>
-            <Button>Create Bottle</Button>
+
+            <Button
+                className="createBottle"
+                onClick={() => {
+                    setOpenModal(true);
+                }}
+            >
+                Create Bottle
+            </Button>
+            {openModal &&
+                <Modal
+                    closeModal={setOpenModal}
+                    title="Create Bottle"
+                >
+                    <form onSubmit={form.onSubmit(handleSubmit)}>
+                        <TextInput
+                            label="vendorId"
+                            withAsterisk
+                            key={form.key('vendorId')}
+                            {...form.getInputProps('vendorId')}
+                        />
+                        <TextInput
+                            label="brand"
+                            withAsterisk
+                            mt="md"
+                            key={form.key('brand')}
+                            {...form.getInputProps('brand')}
+                        />
+                        <TextInput
+                            label="capacity"
+                            withAsterisk
+                            mt="md"
+                            key={form.key('capacity')}
+                            {...form.getInputProps('capacity')}
+                        />
+                        <TextInput
+                            label="barcode"
+                            withAsterisk
+                            mt="md"
+                            key={form.key('barcode')}
+                            {...form.getInputProps('barcode')}
+                        />
+
+                        <Group justify="flex-end" mt="md">
+                            <Button type="submit">Create Bottle</Button>
+                        </Group>
+                    </form>
+                </Modal>
+            }
             <Table>
                 <Table.Thead>
                     <Table.Tr>

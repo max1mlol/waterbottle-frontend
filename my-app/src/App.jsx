@@ -1,15 +1,17 @@
 import '@mantine/core/styles.css';
 import {BrowserRouter, BrowserRouter as Router, Route, Routes} from "react-router-dom";
-import { MantineProvider } from '@mantine/core';
+import {MantineProvider} from '@mantine/core';
 import Home from "./Home.jsx";
 import VendorList from "./VendorList.jsx";
 import VendorDetail from "./VendorDetail.jsx";
 import NotFound from "./NotFound.jsx";
 import NavBar from "./NavBar.jsx";
-import BottleList from "./BottleList.jsx";
+import BottleList from "./BottleList.jsx";;
+import { useState } from "react"
 
 
 export default function App() {
+
     return (
         <MantineProvider>
             <NavBar />
