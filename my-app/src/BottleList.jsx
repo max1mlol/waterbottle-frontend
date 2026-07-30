@@ -1,12 +1,11 @@
 import {useEffect, useState} from "react";
-import {Button, Group, Table, TextInput} from "@mantine/core";
+import {Button, Group, Table, TextInput, Select} from "@mantine/core";
 import {Route, Routes, Link} from "react-router-dom";
 import {hasLength, useForm} from "@mantine/form";
 import Modal from "./Components/Modal.jsx";
 
 function BottleList(){
     const [openModal, setOpenModal] = useState(false);
-
     const handleSubmit = (values) => {
         fetch("http://localhost:8080/water-bottles/",
             {
@@ -28,6 +27,12 @@ function BottleList(){
             .then(result => setBottleList(result.data))
     }, [])
 
+    const [vendorList, setVendorList] = useState([]);
+    useEffect(() => {
+        fetch('http://localhost:8080/vendors?page=0&pageSize=100')
+            .then(response => response.json())
+            .then(result => setVendorList(result.data))
+    }, [])
     const rows = bottleList.map((bottle) => (
         <Table.Tr key={bottle.id}>
             <Table.Td>{bottle.id}</Table.Td>
@@ -71,9 +76,15 @@ function BottleList(){
                     title="Create Bottle"
                 >
                     <form onSubmit={form.onSubmit(handleSubmit)}>
-                        <TextInput
+                        <Select
                             label="vendorId"
                             withAsterisk
+                            data={
+                                    vendorList.map(vendor => ({
+                                        value: vendor.id.toString(),
+                                        label: vendor.name,
+                                    }))
+                            }
                             key={form.key('vendorId')}
                             {...form.getInputProps('vendorId')}
                         />
