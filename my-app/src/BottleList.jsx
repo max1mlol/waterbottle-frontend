@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {Button, Group, Table, TextInput, Select} from "@mantine/core";
+import {Button, Group, Table, TextInput, Select, TabsList} from "@mantine/core";
 import {Route, Routes, Link} from "react-router-dom";
 import {hasLength, useForm} from "@mantine/form";
 import Modal from "./Components/Modal.jsx";
@@ -20,6 +20,26 @@ function BottleList(){
                 })
                 .catch(error => console.log(error));
     }
+
+    const handleDelete = (id) => {
+        fetch(`http://localhost:8080/water-bottles/${id}`,
+            {
+                method: "DELETE",
+            })
+                .then(response =>  response.json())
+                .then(result => setBottleList(result.data))
+                .catch(error => console.log(error));
+    }
+
+    const handleUpdate = (id) => {
+        fetch(`http://localhost:8080/water-bottles/${id}`,
+            {
+                method: "UPDATE",
+            })
+            .then(response => response.json())
+            .then(result => setBottleList(result.data))
+            .catch(error => console.log(error));
+    }
     const [bottleList, setBottleList] = useState([])
     useEffect(() => {
         fetch(`http://localhost:8080/water-bottles?page=0&pageSize=100`)
@@ -29,17 +49,20 @@ function BottleList(){
 
     const [vendorList, setVendorList] = useState([]);
     useEffect(() => {
-        fetch('http://localhost:8080/vendors?page=0&pageSize=100')
+        fetch(`http://localhost:8080/vendors?page=0&pageSize=100`)
             .then(response => response.json())
             .then(result => setVendorList(result.data))
     }, [])
     const rows = bottleList.map((bottle) => (
         <Table.Tr key={bottle.id}>
+            <Table.Td><Button onClick={() => handleUpdate(bottle.id)}>update</Button></Table.Td>
             <Table.Td>{bottle.id}</Table.Td>
             <Table.Td>{bottle.brand}</Table.Td>
             <Table.Td>{bottle.capacity}</Table.Td>
             <Table.Td>{bottle.barcode}</Table.Td>
             <Table.Td>{bottle.vendorId}</Table.Td>
+            <Table.Td><Button onClick={() => handleDelete(bottle.id)}>delete</Button></Table.Td>
+
         </Table.Tr>
     ));
 
@@ -119,11 +142,13 @@ function BottleList(){
             <Table>
                 <Table.Thead>
                     <Table.Tr>
+                        <Table.Th>update</Table.Th>
                         <Table.Th>id</Table.Th>
                         <Table.Th>brand</Table.Th>
                         <Table.Th>capacity</Table.Th>
                         <Table.Th>barcode</Table.Th>
                         <Table.Th>vendorId</Table.Th>
+                        <Table.Th>delete</Table.Th>
                     </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
