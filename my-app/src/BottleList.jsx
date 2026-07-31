@@ -8,6 +8,22 @@ function BottleList(){
     const [openModalTwo, setOpenModalTwo] = useState(false);
     const [updatedBottle, setUpdatedBottle] = useState(null);
 
+    const form = useForm({
+        mode: 'uncontrolled',
+        initialValues: {
+            vendorId: "",
+            brand: "",
+            capacity: "",
+            barcode: ""
+        },
+        validate: {
+            vendorId: hasLength({ min: 1, max: 10 }, 'Vendor Id must be 1-10 characters long'),
+            brand: hasLength({ min: 1, max: 10 }, 'Brand must be 1-10 characters long'),
+            capacity: hasLength({ min: 1, max: 100 }, 'Contract Signed Date must be 1-10 characters long'),
+            barcode: hasLength({ min: 2, max: 100 }, 'Contract End Date must be 2-10 characters long'),
+        },
+    });
+
     const updateForm = useForm({
         mode: 'uncontrolled',
         initialValues: {
@@ -16,7 +32,6 @@ function BottleList(){
             capacity: "",
             barcode: ""
         },
-
         validate: {
             vendorId: hasLength({ min: 1, max: 10 }, 'Vendor Id must be 1-10 characters long'),
             brand: hasLength({ min: 1, max: 10 }, 'Brand must be 1-10 characters long'),
@@ -75,9 +90,9 @@ function BottleList(){
             .then(response => response.json())
             .then(result => setVendorList(result.data))
     }, [])
+
     const openUpdateModal = (bottle) => {
         setUpdatedBottle(bottle);
-
         updateForm.setValues({
             vendorId: bottle.vendorId.toString(),
             brand: bottle.brand,
@@ -106,25 +121,8 @@ function BottleList(){
         </Table.Tr>
     ));
 
-    const form = useForm({
-        mode: 'uncontrolled',
-        initialValues: {
-            vendorId: "",
-            brand: "",
-            capacity: "",
-            barcode: ""
-        },
-
-        validate: {
-            vendorId: hasLength({ min: 1, max: 10 }, 'Vendor Id must be 1-10 characters long'),
-            brand: hasLength({ min: 1, max: 10 }, 'Brand must be 1-10 characters long'),
-            capacity: hasLength({ min: 1, max: 100 }, 'Contract Signed Date must be 1-10 characters long'),
-            barcode: hasLength({ min: 2, max: 100 }, 'Contract End Date must be 2-10 characters long'),
-        },
-    });
     return (
         <>
-
             <Button
                 className="createBottle"
                 onClick={() => {
@@ -172,7 +170,6 @@ function BottleList(){
                             key={form.key('barcode')}
                             {...form.getInputProps('barcode')}
                         />
-
                         <Group justify="flex-end" mt="md">
                             <Button type="submit">Create Bottle</Button>
                         </Group>
@@ -238,7 +235,6 @@ function BottleList(){
                 </Table.Tbody>
             </Table>
         </>
-
     )
 }
 
