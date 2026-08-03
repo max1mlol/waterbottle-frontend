@@ -3,12 +3,16 @@ import Home from "./Home.jsx";
 import VendorList from "./VendorList.jsx";
 import VendorDetail from "./VendorDetail.jsx";
 import NotFound from "./NotFound.jsx";
+import { IconBottle } from '@tabler/icons-react';
 
 export default function NavBar() {
     return (
         <nav className="nav">
             <a href="/" className="site-title">
-                Waterbottle
+                <div>
+                    <IconBottle stroke={2} />
+                    Waterbottle
+                </div>
             </a>
             <ul>
                 <li>

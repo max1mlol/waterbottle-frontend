@@ -1,13 +1,15 @@
 import {useEffect, useState} from "react";
-import {Button, Group, NativeSelect, NumberInput, Table, Text, TextInput} from "@mantine/core";
+import {Button, Group, NativeSelect, NumberInput, Select, Table, Text, TextInput} from "@mantine/core";
 import {Route, Routes, Link} from "react-router-dom";
 import Modal from "./Components/Modal.jsx"
-import {hasLength, isEmail, isInRange, isNotEmpty, isOneOf, isUrl, matches, useForm} from "@mantine/form";
+import {hasLength, useForm} from "@mantine/form";
 
 
 function VendorList(){
     const [vendorList, setVendorList] = useState([])
     const [openModal, setOpenModal] = useState(false);
+    const [openModalTwo, setOpenModalTwo] = useState(false);
+    const [updatedVendor, setUpdatedVendor] = useState(null);
 
     useEffect(() => {
         fetch(`http://localhost:8080/vendors?page=0&pageSize=100`)
@@ -25,16 +27,64 @@ function VendorList(){
                 setOpenModal(false);
             })
             .catch(error => console.log(error));
-
     }
 
+    const handleUpdate = (values) => {
+        fetch(`http://localhost:8080/vendors/${updatedVendor.id}`,
+            {
+                method: "PUT",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(values)
+            })
+            .then(response => response.json())
+            .then(result => setVendorList(result.data))
+            .catch(error => console.log(error));
+    }
+
+    const handleDelete = (id) => {
+        fetch(`http://localhost:8080/vendors/${id}`,
+            {
+                method: "DELETE",
+            })
+            .then(response =>  response.json())
+            .then(result => setVendorList(result.data))
+            .catch(error => console.log(error));
+    }
+
+    const [bottleList, setBottleList] = useState([])
+    useEffect(() => {
+        fetch(`http://localhost:8080/water-bottles?page=0&pageSize=100`)
+            .then(response => response.json())
+            .then(result => setBottleList(result.data))
+    }, [])
+
+    const openUpdateModal = (vendor) => {
+        setUpdatedVendor(vendor);
+        updateForm.setValues({
+            name: vendor.name,
+            registrationNumber: vendor.registrationNumber,
+            contractSignedDate: vendor.contractSignedDate,
+            getContractEndDate: vendor.getContractEndDate,
+        });
+        setOpenModalTwo(true);
+    }
     const rows = vendorList.map((vendor) => (
         <Table.Tr key={vendor.id}>
+            <Table.Td>
+                <Button onClick={() => openUpdateModal(vendor)}>
+                    Update
+                </Button>
+            </Table.Td>
             <Table.Td><Link to={`/Vendor/${vendor.id}`}>{vendor.id}</Link></Table.Td>
             <Table.Td>{vendor.name}</Table.Td>
             <Table.Td>{vendor.registrationNumber}</Table.Td>
             <Table.Td>{vendor.contractSignedDate}</Table.Td>
             <Table.Td>{vendor.getContractEndDate}</Table.Td>
+            <Table.Td>
+                <Button onClick={() => handleDelete(vendor.id)}>
+                    Delete
+                </Button>
+            </Table.Td>
         </Table.Tr>
     ));
 
@@ -55,6 +105,22 @@ function VendorList(){
         },
     });
 
+    const updateForm = useForm({
+        mode: 'uncontrolled',
+        initialValues: {
+            name: "",
+            registrationNumber: "",
+            contractSignedDate: "",
+            getContractEndDate: "",
+        },
+
+        validate: {
+            name: hasLength({ min: 2, max: 10 }, 'Name must be 2-10 characters long'),
+            registrationNumber: hasLength({ min: 2, max: 10 }, 'Registration Number must be 2-10 characters long'),
+            contractSignedDate: hasLength({ min: 2, max: 100 }, 'Contract Signed Date must be 2-10 characters long'),
+            getContractEndDate: hasLength({ min: 2, max: 100 }, 'Contract End Date must be 2-10 characters long'),
+        },
+    });
     return (
         <>
 
@@ -101,20 +167,61 @@ function VendorList(){
                         />
 
                         <Group justify="flex-end" mt="md">
-                            <Button type="submit">Create Vendor</Button>
+                            <Button type="submit">Update Vendor</Button>
                         </Group>
                     </form>
                 </Modal>
             }
+            {openModalTwo && updatedVendor && (
+                <Modal
+                    closeModal={setOpenModalTwo}
+                    title="Update Vendor"
+                >
+                    <form onSubmit={updateForm.onSubmit(handleUpdate)}>
+                        <TextInput
+                            label="Name"
+                            withAsterisk
+                            key={updateForm.key('name')}
+                            {...updateForm.getInputProps('name')}
+                        />
+                        <TextInput
+                            label="Registration Number"
+                            withAsterisk
+                            mt="md"
+                            key={updateForm.key('registrationNumber')}
+                            {...updateForm.getInputProps('registrationNumber')}
+                        />
+                        <TextInput
+                            label="Contract Signed Date"
+                            withAsterisk
+                            mt="md"
+                            key={updateForm.key('contractSignedDate')}
+                            {...updateForm.getInputProps('contractSignedDate')}
+                        />
+                        <TextInput
+                            label="Get Contract End Date"
+                            withAsterisk
+                            mt="md"
+                            key={updateForm.key('getContractEndDate')}
+                            {...updateForm.getInputProps('getContractEndDate')}
+                        />
+
+                        <Group justify="flex-end" mt="md">
+                            <Button type="submit">Create Vendor</Button>
+                        </Group>
+                    </form>
+                </Modal>
+            )}
             <Table>
                 <Table.Thead>
                     <Table.Tr>
+                        <Table.Th>update</Table.Th>
                         <Table.Th>id</Table.Th>
                         <Table.Th>name</Table.Th>
                         <Table.Th>registrationNumber</Table.Th>
                         <Table.Th>contractSignedDate</Table.Th>
                         <Table.Th>getContractEndDate</Table.Th>
-
+                        <Table.Th>delete</Table.Th>
                     </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
