@@ -38,7 +38,7 @@ function BottleList(){
             capacity: (value) => {Number(value) > 0 ? null : "Capacity must be greater than 0"},
             barcode: hasLength({ min: 2, max: 100 }, 'Barcode must be 2-10 characters long'),
         }
-    })
+    });
 
     const handleSubmit = (values) => {
         fetch("http://localhost:8080/water-bottles/",
@@ -113,6 +113,7 @@ function BottleList(){
             <Table.Td>{bottle.capacity}</Table.Td>
             <Table.Td>{bottle.barcode}</Table.Td>
             <Table.Td>{bottle.vendorId}</Table.Td>
+            <Table.Td>{bottle.vendorName}</Table.Td>
             <Table.Td>
                 <Button onClick={() => handleDelete(bottle.id)}>
                     Delete
@@ -227,6 +228,7 @@ function BottleList(){
                         <Table.Th>capacity</Table.Th>
                         <Table.Th>barcode</Table.Th>
                         <Table.Th>vendorId</Table.Th>
+                        <Table.Th>vendorName</Table.Th>
                         <Table.Th>delete</Table.Th>
                     </Table.Tr>
                 </Table.Thead>

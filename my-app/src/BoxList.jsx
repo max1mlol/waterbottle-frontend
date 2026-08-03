@@ -1,0 +1,255 @@
+import {useEffect, useState} from "react";
+import {hasLength, useForm} from "@mantine/form";
+import {Button, Group, Select, Table, TextInput} from "@mantine/core";
+import Modal from "./Components/Modal.jsx";
+
+function BoxList(){
+
+    const [openModal, setOpenModal] = useState(false);
+    const [openModalTwo, setOpenModalTwo] = useState(false);
+    const [updatedBox, setUpdatedBox] = useState(null);
+
+    const form = useForm({
+        mode: 'uncontrolled',
+        initialValues: {
+            length: "",
+            width: "",
+            height: "",
+            volume: ""
+        },
+        validate: {
+            length: (value) => {Number(value) > 0 ? null : "Capacity must be greater than 0"},
+            width: (value) => {Number(value) > 0 ? null : "Capacity must be greater than 0"},
+            height: (value) => {Number(value) > 0 ? null : "Capacity must be greater than 0"},
+            volume: (value) => {Number(value) > 0 ? null : "Capacity must be greater than 0"},
+        },
+    });
+
+    const updateForm = useForm({
+        mode: 'uncontrolled',
+        initialValues: {
+            length: "",
+            width: "",
+            height: "",
+            volume: ""
+        },
+        validate: {
+            length: (value) => {Number(value) > 0 ? null : "Capacity must be greater than 0"},
+            width: (value) => {Number(value) > 0 ? null : "Capacity must be greater than 0"},
+            height: (value) => {Number(value) > 0 ? null : "Capacity must be greater than 0"},
+            volume: (value) => {Number(value) > 0 ? null : "Capacity must be greater than 0"},
+        },
+    });
+
+    const [boxList, setBoxList] = useState([]);
+    useEffect(() => {
+        fetch(`http://localhost:8080/boxes?page=0&pageSize=100`)
+            .then(response => response.json())
+            .then(result => setBoxList(result.data))
+    }, [])
+
+    const handleSubmit = (values) => {
+        fetch("http://localhost:8080/boxes/",
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json", },
+                body: JSON.stringify(values),
+            })
+            .then(response => response.json())
+            .then(result => {
+                setBoxList((prev) => [...prev, result.data]);
+                setOpenModal(false);
+            })
+            .catch(error => console.log(error));
+    }
+    const handleUpdate = (values) => {
+        fetch(`http://localhost:8080/boxes/${updatedBox.id}`,
+            {
+                method: "PUT",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(values)
+            })
+            .then(response => response.json())
+            .then(result => setBoxList(result.data))
+            .catch(error => console.log(error));
+    }
+    const handleDelete = (id) => {
+        fetch(`http://localhost:8080/boxes/${id}`,
+            {
+                method: "DELETE",
+            })
+            .then(response =>  response.json())
+            .then(result => setBoxList(result.data))
+            .catch(error => console.log(error));
+    }
+
+    const [bottleList, setBottleList] = useState([])
+    useEffect(() => {
+        fetch(`http://localhost:8080/water-bottles?page=0&pageSize=100`)
+            .then(response => response.json())
+            .then(result => setBottleList(result.data))
+    }, [])
+
+    const [vendorList, setVendorList] = useState([]);
+    useEffect(() => {
+        fetch(`http://localhost:8080/vendors?page=0&pageSize=100`)
+            .then(response => response.json())
+            .then(result => setVendorList(result.data))
+    }, [])
+
+    const openUpdateModal = (box) => {
+        setUpdatedBox(box);
+        updateForm.setValues({
+            length: box.length,
+            width: box.width,
+            height: box.height,
+            volume: box.volume,
+        });
+        setOpenModalTwo(true);
+    }
+    const rows = boxList.map((box) => (
+        <Table.Tr key={box.id}>
+            <Table.Td>
+                <Button onClick={() => openUpdateModal(box)}>
+                    Update
+                </Button>
+            </Table.Td>
+            <Table.Td>{box.id}</Table.Td>
+            <Table.Td>{box.length}</Table.Td>
+            <Table.Td>{box.width}</Table.Td>
+            <Table.Td>{box.height}</Table.Td>
+            <Table.Td>{box.volume}</Table.Td>
+            <Table.Td>
+                <Button onClick={() => handleDelete(box.id)}>
+                    Delete
+                </Button>
+            </Table.Td>
+        </Table.Tr>
+    ));
+
+    return (
+        <>
+            <Button
+                className="createBox"
+                onClick={() => {
+                    setOpenModal(true);
+                }}
+            >
+                Create
+            </Button>
+            {openModal &&
+                <Modal
+                    closeModal={setOpenModal}
+                    title="Create Box"
+                >
+                    <form onSubmit={form.onSubmit(handleSubmit)}>
+                        <Select
+                            label="vendorId"
+                            withAsterisk
+                            data={
+                                vendorList.map(box => ({
+                                    value: box.id.toString(),
+                                    label: box.name,
+                                }))
+                            }
+                            key={form.key('boxId')}
+                            {...form.getInputProps('boxId')}
+                        />
+                        <TextInput
+                            label="length"
+                            withAsterisk
+                            mt="md"
+                            key={form.key('length')}
+                            {...form.getInputProps('length')}
+                        />
+                        <TextInput
+                            label="width"
+                            withAsterisk
+                            mt="md"
+                            key={form.key('width')}
+                            {...form.getInputProps('width')}
+                        />
+                        <TextInput
+                            label="height"
+                            withAsterisk
+                            mt="md"
+                            key={form.key('height')}
+                            {...form.getInputProps('height')}
+                        />
+
+                        <Group justify="flex-end" mt="md">
+                            <Button type="submit">Create Box</Button>
+                        </Group>
+                    </form>
+                </Modal>
+            }
+
+            {openModalTwo && updatedBox && (
+                <Modal
+                    closeModal={setOpenModalTwo}
+                    title="Update Box"
+                >
+                    <form onSubmit={updateForm.onSubmit(handleUpdate)}>
+                        <Select
+                            label="boxId"
+                            data={vendorList.map(box => ({
+                                value: box.id.toString(),
+                                label: box.name,
+                            }))}
+                            {...updateForm.getInputProps("boxId")}
+                        />
+                        <TextInput
+                            label="length"
+                            withAsterisk
+                            mt="md"
+                            key={updateForm.key('length')}
+                            {...updateForm.getInputProps('length')}
+                        />
+                        <TextInput
+                            label="width"
+                            withAsterisk
+                            mt="md"
+                            key={updateForm.key('width')}
+                            {...updateForm.getInputProps('width')}
+                        />
+                        <TextInput
+                            label="height"
+                            withAsterisk
+                            mt="md"
+                            key={updateForm.key('height')}
+                            {...updateForm.getInputProps('height')}
+                        />
+                        <TextInput
+                            label="volume"
+                            withAsterisk
+                            mt="md"
+                            key={updateForm.key('volume')}
+                            {...updateForm.getInputProps('volume')}
+                        />
+                        <Group justify="flex-end" mt="md">
+                            <Button type="submit">Update Box</Button>
+                        </Group>
+                    </form>
+                </Modal>
+            )}
+            <Table>
+                <Table.Thead>
+                    <Table.Tr>
+                        <Table.Th>update</Table.Th>
+                        <Table.Th>id</Table.Th>
+                        <Table.Th>length</Table.Th>
+                        <Table.Th>width</Table.Th>
+                        <Table.Th>height</Table.Th>
+                        <Table.Th>volume</Table.Th>
+                        <Table.Th>delete</Table.Th>
+                    </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                    {rows}
+                </Table.Tbody>
+            </Table>
+        </>
+    )
+}
+
+export default BoxList

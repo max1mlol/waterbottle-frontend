@@ -8,6 +8,7 @@ import NotFound from "./NotFound.jsx";
 import NavBar from "./NavBar.jsx";
 import BottleList from "./BottleList.jsx";;
 import { useState } from "react"
+import BoxList from "./BoxList.jsx";
 
 
 export default function App() {
@@ -21,6 +22,7 @@ export default function App() {
                     <Route path="/Vendor" element={<VendorList />} />
                     <Route path="/Vendor/:id" element={<VendorDetail />} />
                     <Route path="/Bottle" element={<BottleList />} />
+                    <Route path="/Box" element={<BoxList />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </BrowserRouter>

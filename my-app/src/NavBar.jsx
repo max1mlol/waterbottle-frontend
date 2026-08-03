@@ -16,11 +16,12 @@ export default function NavBar() {
                 </li>
                 <li>
                     <a href="/vendor">Vendor</a>
-
                 </li>
                 <li>
                     <a href="/bottle">Bottle</a>
-
+                </li>
+                <li>
+                    <a href="/box">Box</a>
                 </li>
             </ul>
         </nav>
