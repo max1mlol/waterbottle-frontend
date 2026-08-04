@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import {createBrowserRouter, useParams, Route, Router, RouterProvider, Routes, Link} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {Table} from "@mantine/core";
 
 function VendorDetail() {

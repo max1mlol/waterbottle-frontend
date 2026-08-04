@@ -1,8 +1,3 @@
-import {Route, Routes} from "react-router-dom";
-import Home from "./Home.jsx";
-import VendorList from "./VendorList.jsx";
-import VendorDetail from "./VendorDetail.jsx";
-import NotFound from "./NotFound.jsx";
 import { IconBottle } from '@tabler/icons-react';
 
 export default function NavBar() {
@@ -31,11 +26,3 @@ export default function NavBar() {
         </nav>
     )
 }
-/*
-
-<Routes>
-    <Route exact path="/" element={<Home />} />
-    <Route path="/Vendor" element={<VendorList />} />
-    <Route path="/vendor/:id" element={<VendorDetail />} />
-    <Route path="*" element={<NotFound />} />
-</Routes>*/

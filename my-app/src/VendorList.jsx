@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
-import {Button, Group, NativeSelect, NumberInput, Select, Table, Text, TextInput} from "@mantine/core";
-import {Route, Routes, Link} from "react-router-dom";
+import {Button, Group,  Table, TextInput} from "@mantine/core";
+import {Link} from "react-router-dom";
 import Modal from "./Components/Modal.jsx"
 import {hasLength, useForm} from "@mantine/form";
 

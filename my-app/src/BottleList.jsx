@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {Button, Group, Table, TextInput, Select, TabsList} from "@mantine/core";
+import {Button, Group, Table, TextInput, Select} from "@mantine/core";
 import {hasLength, useForm} from "@mantine/form";
 import Modal from "./Components/Modal.jsx";
 
@@ -136,6 +136,7 @@ function BottleList(){
                 <Modal
                     closeModal={setOpenModal}
                     title="Create Bottle"
+                    centered
                 >
                     <form onSubmit={form.onSubmit(handleSubmit)}>
                         <Select
