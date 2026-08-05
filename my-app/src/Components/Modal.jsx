@@ -1,6 +1,15 @@
+import "./Modal.css";
+
 function Modal({ closeModal, title, children }) {
     return (
-        <div className="modalBackground">
+        <div
+            className="modalBackground"
+            onClick={(e) => {
+                if (e.target === e.currentTarget) {
+                    closeModal(false);
+                }
+            }}
+        >
             <div className="modalContainer">
                 <button
                     className="closeButton"
