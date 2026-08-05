@@ -3,7 +3,7 @@ import {Button, Group,  Table, TextInput} from "@mantine/core";
 import {Link} from "react-router-dom";
 import Modal from "./Components/Modal.jsx"
 import {hasLength, useForm} from "@mantine/form";
-
+import dayjs from 'dayjs';
 
 function VendorList(){
     const [vendorList, setVendorList] = useState([])
@@ -68,25 +68,30 @@ function VendorList(){
         });
         setOpenModalTwo(true);
     }
-    const rows = vendorList.map((vendor) => (
-        <Table.Tr key={vendor.id}>
-            <Table.Td>
-                <Button onClick={() => openUpdateModal(vendor)}>
-                    Update
-                </Button>
-            </Table.Td>
-            <Table.Td><Link to={`/Vendor/${vendor.id}`}>{vendor.id}</Link></Table.Td>
-            <Table.Td>{vendor.name}</Table.Td>
-            <Table.Td>{vendor.registrationNumber}</Table.Td>
-            <Table.Td>{vendor.contractSignedDate}</Table.Td>
-            <Table.Td>{vendor.getContractEndDate}</Table.Td>
-            <Table.Td>
-                <Button onClick={() => handleDelete(vendor.id)}>
-                    Delete
-                </Button>
-            </Table.Td>
-        </Table.Tr>
-    ));
+    const rows = vendorList.map((vendor) => {
+        const timeStart = dayjs(vendor.contractSignedDate).format('YYYY-MM-DD');
+        const timeEnd = dayjs(vendor.getContractEndDate).format('YYYY-MM-DD');
+        return (
+            <Table.Tr key={vendor.id}>
+                <Table.Td>
+                    <Button onClick={() => openUpdateModal(vendor)}>
+                        Update
+                    </Button>
+                </Table.Td>
+                <Table.Td><Link to={`/Vendor/${vendor.id}`}>{vendor.id}</Link></Table.Td>
+                <Table.Td>{vendor.name}</Table.Td>
+                <Table.Td>{vendor.registrationNumber}</Table.Td>
+                <Table.Td>{timeStart}</Table.Td>
+                <Table.Td>{timeEnd}</Table.Td>
+                <Table.Td>
+                    <Button onClick={() => handleDelete(vendor.id)}>
+                        Delete
+                    </Button>
+                </Table.Td>
+            </Table.Tr>
+        )
+    });
+
 
     const form = useForm({
         mode: 'uncontrolled',
@@ -159,7 +164,7 @@ function VendorList(){
                             {...form.getInputProps('contractSignedDate')}
                         />
                         <TextInput
-                            label="Get Contract End Date"
+                            label="Contract End Date"
                             withAsterisk
                             mt="md"
                             key={form.key('getContractEndDate')}
@@ -199,7 +204,7 @@ function VendorList(){
                             {...updateForm.getInputProps('contractSignedDate')}
                         />
                         <TextInput
-                            label="Get Contract End Date"
+                            label="Contract End Date"
                             withAsterisk
                             mt="md"
                             key={updateForm.key('getContractEndDate')}
