@@ -1,13 +1,16 @@
 import {useEffect, useState} from "react";
 import {useForm} from "@mantine/form";
-import {Button, Group, Select, Table, TextInput} from "@mantine/core";
+import {Button, Group, Pagination, Select, Table, TextInput} from "@mantine/core";
 import Modal from "./Components/Modal.jsx";
 
 function BoxList(){
-
+    const pageSize = 5;
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
     const [openModal, setOpenModal] = useState(false);
     const [openModalTwo, setOpenModalTwo] = useState(false);
     const [updatedBox, setUpdatedBox] = useState(null);
+    const [boxList, setBoxList] = useState([]);
 
     const form = useForm({
         mode: 'uncontrolled',
@@ -25,6 +28,17 @@ function BoxList(){
         },
     });
 
+    useEffect(() => {
+        fetch(
+            `http://localhost:8080/boxes?page=${page - 1}&pageSize=${pageSize}`
+        )
+            .then((response) => response.json())
+            .then((result) => {
+                setBoxList(result.data);
+                setTotalPages(Math.ceil(result.total / pageSize));
+            });
+    }, [page]);
+
     const updateForm = useForm({
         mode: 'uncontrolled',
         initialValues: {
@@ -41,15 +55,8 @@ function BoxList(){
         },
     });
 
-    const [boxList, setBoxList] = useState([]);
-    useEffect(() => {
-        fetch(`http://localhost:8080/boxes?page=0&pageSize=100`)
-            .then(response => response.json())
-            .then(result => setBoxList(result.data))
-    }, [])
-
     const handleSubmit = (values) => {
-        fetch("http://localhost:8080/boxes/",
+        fetch("http://localhost:8080/boxes",
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json", },
@@ -83,16 +90,9 @@ function BoxList(){
             .catch(error => console.log(error));
     }
 
-    const [bottleList, setBottleList] = useState([])
-    useEffect(() => {
-        fetch(`http://localhost:8080/water-bottles?page=0&pageSize=100`)
-            .then(response => response.json())
-            .then(result => setBottleList(result.data))
-    }, [])
-
     const [vendorList, setVendorList] = useState([]);
     useEffect(() => {
-        fetch(`http://localhost:8080/vendors?page=0&pageSize=100`)
+        fetch(`http://localhost:8080/vendors`)
             .then(response => response.json())
             .then(result => setVendorList(result.data))
     }, [])
@@ -248,6 +248,12 @@ function BoxList(){
                     {rows}
                 </Table.Tbody>
             </Table>
+            <Pagination
+                value={page}
+                onChange={setPage}
+                total={totalPages}
+                color="gray"
+            />
         </>
     )
 }

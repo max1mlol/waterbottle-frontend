@@ -1,23 +1,21 @@
 import {useEffect, useState} from "react";
-import {Button, Group,  Table, TextInput} from "@mantine/core";
+import {Button, Group, Pagination, Table, TextInput} from "@mantine/core";
 import {Link} from "react-router-dom";
 import Modal from "./Components/Modal.jsx"
 import {hasLength, useForm} from "@mantine/form";
 import dayjs from 'dayjs';
 
 function VendorList(){
+    const pageSize = 5;
     const [vendorList, setVendorList] = useState([])
     const [openModal, setOpenModal] = useState(false);
     const [openModalTwo, setOpenModalTwo] = useState(false);
     const [updatedVendor, setUpdatedVendor] = useState(null);
+    const [totalPages, setTotalPages] = useState(1);
+    const [page, setPage] = useState(1);
 
-    useEffect(() => {
-        fetch(`http://localhost:8080/vendors?page=0&pageSize=100`)
-            .then(response => response.json())
-            .then(result => setVendorList(result.data))
-    }, [])
     const handleSubmit = (values) => {
-        fetch("http://localhost:8080/vendors/", {method: "POST",   headers: {
+        fetch("http://localhost:8080/vendors", {method: "POST",   headers: {
                 "Content-Type": "application/json",
             }, body: JSON.stringify(values),
         })
@@ -28,6 +26,17 @@ function VendorList(){
             })
             .catch(error => console.log(error));
     }
+
+    useEffect(() => {
+        fetch(
+            `http://localhost:8080/vendors?page=${page - 1}&pageSize=${pageSize}`
+        )
+            .then((response) => response.json())
+            .then((result) => {
+                setVendorList(result.data);
+                setTotalPages(Math.ceil(result.total / pageSize));
+            });
+    }, [page]);
 
     const handleUpdate = (values) => {
         fetch(`http://localhost:8080/vendors/${updatedVendor.id}`,
@@ -53,7 +62,7 @@ function VendorList(){
 
     const [bottleList, setBottleList] = useState([])
     useEffect(() => {
-        fetch(`http://localhost:8080/water-bottles?page=0&pageSize=100`)
+        fetch(`http://localhost:8080/water-bottles`)
             .then(response => response.json())
             .then(result => setBottleList(result.data))
     }, [])
@@ -233,6 +242,12 @@ function VendorList(){
                     {rows}
                 </Table.Tbody>
             </Table>
+            <Pagination
+                value={page}
+                onChange={setPage}
+                total={totalPages}
+                color="gray"
+            />
         </>
 
     )

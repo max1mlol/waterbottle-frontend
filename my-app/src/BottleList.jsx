@@ -1,9 +1,13 @@
 import {useEffect, useState} from "react";
-import {Button, Group, Table, TextInput, Select} from "@mantine/core";
+import {Button, Group, Table, TextInput, Select, Pagination} from "@mantine/core";
 import {hasLength, useForm} from "@mantine/form";
 import Modal from "./Components/Modal.jsx";
 
 function BottleList(){
+    const pageSize = 5;
+    const [bottleList, setBottleList] = useState([]);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
     const [openModal, setOpenModal] = useState(false);
     const [openModalTwo, setOpenModalTwo] = useState(false);
     const [updatedBottle, setUpdatedBottle] = useState(null);
@@ -24,6 +28,16 @@ function BottleList(){
         },
     });
 
+    useEffect(() => {
+        fetch(
+            `http://localhost:8080/water-bottles?page=${page - 1}&pageSize=${pageSize}`
+        )
+            .then((response) => response.json())
+            .then((result) => {
+                setBottleList(result.data);
+                setTotalPages(Math.ceil(result.total / pageSize));
+            });
+    }, [page]);
     const updateForm = useForm({
         mode: 'uncontrolled',
         initialValues: {
@@ -77,16 +91,9 @@ function BottleList(){
                 .catch(error => console.log(error));
     }
 
-    const [bottleList, setBottleList] = useState([])
-    useEffect(() => {
-        fetch(`http://localhost:8080/water-bottles?page=0&pageSize=100`)
-            .then(response => response.json())
-            .then(result => setBottleList(result.data))
-    }, [])
-
     const [vendorList, setVendorList] = useState([]);
     useEffect(() => {
-        fetch(`http://localhost:8080/vendors?page=0&pageSize=100`)
+        fetch(`http://localhost:8080/vendors`)
             .then(response => response.json())
             .then(result => setVendorList(result.data))
     }, [])
@@ -237,6 +244,12 @@ function BottleList(){
                     {rows}
                 </Table.Tbody>
             </Table>
+            <Pagination
+                value={page}
+                onChange={setPage}
+                total={totalPages}
+                color="gray"
+            />
         </>
     )
 }
