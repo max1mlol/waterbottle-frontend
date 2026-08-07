@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 import Modal from "./Components/Modal.jsx"
 import {hasLength, useForm} from "@mantine/form";
 import dayjs from 'dayjs';
-
+import {BACKEND_BASEPATH} from "./constants.ts";
 function VendorList(){
     const pageSize = 5;
     const [vendorList, setVendorList] = useState([])
@@ -29,7 +29,7 @@ function VendorList(){
 
     useEffect(() => {
         fetch(
-            `http://localhost:8080/vendors?page=${page - 1}&pageSize=${pageSize}`
+            `${BACKEND_BASEPATH}/vendors?page=${page - 1}&pageSize=${pageSize}`
         )
             .then((response) => response.json())
             .then((result) => {
@@ -39,7 +39,7 @@ function VendorList(){
     }, [page]);
 
     const handleUpdate = (values) => {
-        fetch(`http://localhost:8080/vendors/${updatedVendor.id}`,
+        fetch(`${BACKEND_BASEPATH}/vendors/${updatedVendor.id}`,
             {
                 method: "PUT",
                 headers: {"Content-Type": "application/json"},
@@ -51,7 +51,7 @@ function VendorList(){
     }
 
     const handleDelete = (id) => {
-        fetch(`http://localhost:8080/vendors/${id}`,
+        fetch(`${BACKEND_BASEPATH}/vendors/${id}`,
             {
                 method: "DELETE",
             })
@@ -62,7 +62,7 @@ function VendorList(){
 
     const [bottleList, setBottleList] = useState([])
     useEffect(() => {
-        fetch(`http://localhost:8080/water-bottles`)
+        fetch(`${BACKEND_BASEPATH}/water-bottles`)
             .then(response => response.json())
             .then(result => setBottleList(result.data))
     }, [])

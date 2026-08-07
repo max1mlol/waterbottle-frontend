@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import {useParams} from "react-router-dom";
 import {Table} from "@mantine/core";
+import {BACKEND_BASEPATH} from "./constants.ts";
 
 function VendorDetail() {
     console.log("VENDOR LIST")
@@ -8,7 +9,7 @@ function VendorDetail() {
     const [vendorDetail, setVendorDetail] = useState([])
     console.log('render')
     useEffect(() => {
-        fetch(`http://localhost:8080/vendors/bottle/${id}`)
+        fetch(`${BACKEND_BASEPATH}/vendors/bottle/${id}`)
             .then(response => response.json())
             .then(result => setVendorDetail(result))
     }, [id])

@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import {Button, Group, Table, TextInput, Select, Pagination} from "@mantine/core";
 import {hasLength, useForm} from "@mantine/form";
 import Modal from "./Components/Modal.jsx";
+import {BACKEND_BASEPATH} from "./constants.ts";
 
 function BottleList(){
     const pageSize = 5;
@@ -30,7 +31,7 @@ function BottleList(){
 
     useEffect(() => {
         fetch(
-            `http://localhost:8080/water-bottles?page=${page - 1}&pageSize=${pageSize}`
+            `${BACKEND_BASEPATH}/water-bottles?page=${page - 1}&pageSize=${pageSize}`
         )
             .then((response) => response.json())
             .then((result) => {
@@ -55,7 +56,7 @@ function BottleList(){
     });
 
     const handleSubmit = (values) => {
-        fetch("http://localhost:8080/water-bottles/",
+        fetch(`${BACKEND_BASEPATH}/water-bottles/`,
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json", },
@@ -70,7 +71,7 @@ function BottleList(){
     }
 
     const handleUpdate = (values) => {
-        fetch(`http://localhost:8080/water-bottles/${updatedBottle.id}`,
+        fetch(`${BACKEND_BASEPATH}/water-bottles/${updatedBottle.id}`,
             {
                 method: "PUT",
                 headers: {"Content-Type": "application/json"},
@@ -82,7 +83,7 @@ function BottleList(){
     }
 
     const handleDelete = (id) => {
-        fetch(`http://localhost:8080/water-bottles/${id}`,
+        fetch(`${BACKEND_BASEPATH}/water-bottles/${id}`,
             {
                 method: "DELETE",
             })
@@ -93,7 +94,7 @@ function BottleList(){
 
     const [vendorList, setVendorList] = useState([]);
     useEffect(() => {
-        fetch(`http://localhost:8080/vendors`)
+        fetch(`${BACKEND_BASEPATH}/vendors`)
             .then(response => response.json())
             .then(result => setVendorList(result.data))
     }, [])

@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import {useForm} from "@mantine/form";
 import {Button, Group, Pagination, Select, Table, TextInput} from "@mantine/core";
 import Modal from "./Components/Modal.jsx";
+import {BACKEND_BASEPATH} from "./constants.ts";
 
 function BoxList(){
     const pageSize = 5;
@@ -30,7 +31,7 @@ function BoxList(){
 
     useEffect(() => {
         fetch(
-            `http://localhost:8080/boxes?page=${page - 1}&pageSize=${pageSize}`
+            `${BACKEND_BASEPATH}/boxes?page=${page - 1}&pageSize=${pageSize}`
         )
             .then((response) => response.json())
             .then((result) => {
@@ -56,7 +57,7 @@ function BoxList(){
     });
 
     const handleSubmit = (values) => {
-        fetch("http://localhost:8080/boxes",
+        fetch("${BACKEND_BASEPATH}/boxes",
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json", },
@@ -70,7 +71,7 @@ function BoxList(){
             .catch(error => console.log(error));
     }
     const handleUpdate = (values) => {
-        fetch(`http://localhost:8080/boxes/${updatedBox.id}`,
+        fetch(`${BACKEND_BASEPATH}/boxes/${updatedBox.id}`,
             {
                 method: "PUT",
                 headers: {"Content-Type": "application/json"},
@@ -81,7 +82,7 @@ function BoxList(){
             .catch(error => console.log(error));
     }
     const handleDelete = (id) => {
-        fetch(`http://localhost:8080/boxes/${id}`,
+        fetch(`${BACKEND_BASEPATH}/boxes/${id}`,
             {
                 method: "DELETE",
             })
@@ -92,7 +93,7 @@ function BoxList(){
 
     const [vendorList, setVendorList] = useState([]);
     useEffect(() => {
-        fetch(`http://localhost:8080/vendors`)
+        fetch(`${BACKEND_BASEPATH}/vendors`)
             .then(response => response.json())
             .then(result => setVendorList(result.data))
     }, [])
