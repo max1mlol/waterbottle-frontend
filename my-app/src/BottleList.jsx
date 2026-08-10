@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {Button, Group, Table, TextInput, Select, Pagination} from "@mantine/core";
-import {hasLength, useForm} from "@mantine/form";
+import {hasLength, isOneOf, useForm} from "@mantine/form";
 import Modal from "./Components/Modal.jsx";
 import {BACKEND_BASEPATH} from "./constants.ts";
 
@@ -11,8 +11,14 @@ function BottleList(){
     const [totalPages, setTotalPages] = useState(1);
     const [openModal, setOpenModal] = useState(false);
     const [openModalTwo, setOpenModalTwo] = useState(false);
+    const [openModalThree, setOpenModalThree] = useState(false);
     const [updatedBottle, setUpdatedBottle] = useState(null);
-
+    const [filterParams, setFilterParams] = useState({
+        sortBy: "",
+        sortMode: "",
+        filterBy: "",
+        filterVal: ""
+    });
     const form = useForm({
         mode: 'uncontrolled',
         initialValues: {
@@ -28,17 +34,37 @@ function BottleList(){
             barcode: hasLength({ min: 2, max: 100 }, 'Contract End Date must be 2-10 characters long'),
         },
     });
+    const formOfFilter = useForm({
+        mode: 'uncontrolled',
+        initialValues: {
+            sortBy: "",
+            sortMode: "",
+            filterBy: "",
+            filterVal: ""
+        },
+        validate: {
+            //validate
+        }
+    });
 
-    useEffect(() => {
-        fetch(
-            `${BACKEND_BASEPATH}/water-bottles?page=${page - 1}&pageSize=${pageSize}`
-        )
-            .then((response) => response.json())
-            .then((result) => {
+    const fetchBottles = (pageNumber, filters = filterParams) => {
+        const params = new URLSearchParams({
+            page: (pageNumber - 1).toString(),
+            pageSize: pageSize.toString(),
+            sortBy: filters.sortBy || "",
+            sortMode: filters. sortMode || "",
+            filterBy: filters.filterBy || "",
+            filterVal: filters.filterVal || ""
+        });
+
+        fetch(`${BACKEND_BASEPATH}/water-bottles?${params.toString()}`)
+            .then(response => response.json())
+            .then(result => {
                 setBottleList(result.data);
                 setTotalPages(Math.ceil(result.total / pageSize));
-            });
-    }, [page]);
+            })
+            .catch(error => console.log(error));
+    };
     const updateForm = useForm({
         mode: 'uncontrolled',
         initialValues: {
@@ -81,6 +107,15 @@ function BottleList(){
             .then(result => setBottleList(result.data))
             .catch(error => console.log(error));
     }
+    const handleFilter = (values) => {
+        setPage(1);
+        setFilterParams(values);
+        setOpenModalThree(false);
+    };
+
+    useEffect(() => {
+        fetchBottles(page, filterParams);
+    }, [page, filterParams]);
 
     const handleDelete = (id) => {
         fetch(`${BACKEND_BASEPATH}/water-bottles/${id}`,
@@ -108,6 +143,15 @@ function BottleList(){
             barcode: bottle.barcode,
         });
         setOpenModalTwo(true);
+    }
+    const openFilterModal = (filterParams) => {
+        formOfFilter.setValues({
+            sortBy: filterParams.sortBy,
+            sortMode: filterParams.sortMode,
+            filterBy: filterParams.filterBy,
+            filterVal: filterParams.filterVal,
+        });
+        setOpenModalThree(true);
     }
     const rows = bottleList.map((bottle) => (
         <Table.Tr key={bottle.id}>
@@ -186,7 +230,51 @@ function BottleList(){
                     </form>
                 </Modal>
             }
-
+            <Button
+                className="filterBottle"
+                onClick={() => openFilterModal(filterParams)}
+            >
+                Filter
+            </Button>
+            {openModalThree &&
+                <Modal
+                    closeModal={setOpenModalThree}
+                    title = "Filter"
+                >
+                    <form onSubmit={formOfFilter.onSubmit(handleFilter)}>
+                        <TextInput
+                            label="sortBy"
+                            withAsterisk
+                            mt="md"
+                            key={formOfFilter.key('sortBy')}
+                            {...formOfFilter.getInputProps('sortBy')}
+                        />
+                        <TextInput
+                            label="sortMode"
+                            withAsterisk
+                            mt="md"
+                            key={formOfFilter.key('sortMode')}
+                            {...formOfFilter.getInputProps('sortMode')}
+                        />
+                        <TextInput
+                            label="filterBy"
+                            withAsterisk
+                            mt="md"
+                            key={formOfFilter.key('filterBy')}
+                            {...formOfFilter.getInputProps('filterBy')}
+                        />
+                        <TextInput
+                            label="filterVal"
+                            withAsterisk
+                            mt="md"
+                            key={formOfFilter.key('filterVal')}
+                            {...formOfFilter.getInputProps('filterVal')}
+                        />
+                        <Group justify="flex-end" mt="md">
+                            <Button type="submit">Apply Filter</Button>
+                        </Group>
+                    </form>
+                </Modal>}
             {openModalTwo && updatedBottle && (
                 <Modal
                     closeModal={setOpenModalTwo}

@@ -10,6 +10,7 @@ function VendorList(){
     const [vendorList, setVendorList] = useState([])
     const [openModal, setOpenModal] = useState(false);
     const [openModalTwo, setOpenModalTwo] = useState(false);
+    const [openModalThree, setOpenModalThree] = useState(false);
     const [updatedVendor, setUpdatedVendor] = useState(null);
     const [totalPages, setTotalPages] = useState(1);
     const [page, setPage] = useState(1);
@@ -27,16 +28,26 @@ function VendorList(){
             .catch(error => console.log(error));
     }
 
-    useEffect(() => {
-        fetch(
-            `${BACKEND_BASEPATH}/vendors?page=${page - 1}&pageSize=${pageSize}`
-        )
-            .then((response) => response.json())
-            .then((result) => {
-                setVendorList(result.data);
-                setTotalPages(Math.ceil(result.total / pageSize));
-            });
-    }, [page]);
+    const [filterParams, setFilterParams] = useState({
+        sortBy: "",
+        sortMode: "",
+        filterBy: "",
+        filterVal: ""
+    });
+    const formOfFilter = useForm({
+        mode: 'uncontrolled',
+        initialValues: {
+            sortBy: "",
+            sortMode: "",
+            filterBy: "",
+            filterVal: ""
+        },
+        validate: {
+            //validate
+        }
+    });
+
+
 
     const handleUpdate = (values) => {
         fetch(`${BACKEND_BASEPATH}/vendors/${updatedVendor.id}`,
@@ -60,13 +71,6 @@ function VendorList(){
             .catch(error => console.log(error));
     }
 
-    const [bottleList, setBottleList] = useState([])
-    useEffect(() => {
-        fetch(`${BACKEND_BASEPATH}/water-bottles`)
-            .then(response => response.json())
-            .then(result => setBottleList(result.data))
-    }, [])
-
     const openUpdateModal = (vendor) => {
         setUpdatedVendor(vendor);
         updateForm.setValues({
@@ -76,6 +80,15 @@ function VendorList(){
             getContractEndDate: vendor.getContractEndDate,
         });
         setOpenModalTwo(true);
+    }
+    const openFilterModal = (filterParams) => {
+        formOfFilter.setValues({
+            sortBy: filterParams.sortBy,
+            sortMode: filterParams.sortMode,
+            filterBy: filterParams.filterBy,
+            filterVal: filterParams.filterVal,
+        });
+        setOpenModalThree(true);
     }
     const rows = vendorList.map((vendor) => {
         const timeStart = dayjs(vendor.contractSignedDate).format('YYYY-MM-DD');
@@ -119,6 +132,33 @@ function VendorList(){
         },
     });
 
+    const handleFilter = (values) => {
+        setPage(1);
+        setFilterParams(values);
+        setOpenModalThree(false);
+    };
+
+    const fetchVendors = (pageNumber, filters = filterParams) => {
+        const params = new URLSearchParams({
+            page: (pageNumber - 1).toString(),
+            pageSize: pageSize.toString(),
+            sortBy: filters.sortBy || "",
+            sortMode: filters. sortMode || "",
+            filterBy: filters.filterBy || "",
+            filterVal: filters.filterVal || ""
+        });
+
+        fetch(`${BACKEND_BASEPATH}/vendors?${params.toString()}`)
+            .then(response => response.json())
+            .then(result => {
+                setVendorList(result.data);
+                setTotalPages(Math.ceil(result.total / pageSize));
+            })
+            .catch(error => console.log(error));
+    };
+    useEffect(() => {
+        fetchVendors(page, filterParams);
+    }, [page, filterParams]);
     const updateForm = useForm({
         mode: 'uncontrolled',
         initialValues: {
@@ -186,6 +226,51 @@ function VendorList(){
                     </form>
                 </Modal>
             }
+            <Button
+                className="filterVendor"
+                onClick={() => openFilterModal(filterParams)}
+            >
+                Filter
+            </Button>
+            {openModalThree &&
+                <Modal
+                    closeModal={setOpenModalThree}
+                    title = "Filter"
+                >
+                    <form onSubmit={formOfFilter.onSubmit(handleFilter)}>
+                        <TextInput
+                            label="sortBy"
+                            withAsterisk
+                            mt="md"
+                            key={formOfFilter.key('sortBy')}
+                            {...formOfFilter.getInputProps('sortBy')}
+                        />
+                        <TextInput
+                            label="sortMode"
+                            withAsterisk
+                            mt="md"
+                            key={formOfFilter.key('sortMode')}
+                            {...formOfFilter.getInputProps('sortMode')}
+                        />
+                        <TextInput
+                            label="filterBy"
+                            withAsterisk
+                            mt="md"
+                            key={formOfFilter.key('filterBy')}
+                            {...formOfFilter.getInputProps('filterBy')}
+                        />
+                        <TextInput
+                            label="filterVal"
+                            withAsterisk
+                            mt="md"
+                            key={formOfFilter.key('filterVal')}
+                            {...formOfFilter.getInputProps('filterVal')}
+                        />
+                        <Group justify="flex-end" mt="md">
+                            <Button type="submit">Apply Filter</Button>
+                        </Group>
+                    </form>
+                </Modal>}
             {openModalTwo && updatedVendor && (
                 <Modal
                     closeModal={setOpenModalTwo}
