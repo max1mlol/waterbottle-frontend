@@ -90,6 +90,17 @@ function VendorList(){
         });
         setOpenModalThree(true);
     }
+    const clearFilter = () => {
+        const emptyFilters = {
+            sortBy: "",
+            sortMode: "",
+            filterBy: "",
+            filterVal: "",
+        };
+        setFilterParams(emptyFilters);
+        setPage(1);
+        formOfFilter.setValues(emptyFilters)
+    }
     const rows = vendorList.map((vendor) => {
         const timeStart = dayjs(vendor.contractSignedDate).format('YYYY-MM-DD');
         const timeEnd = dayjs(vendor.getContractEndDate).format('YYYY-MM-DD');
@@ -131,10 +142,15 @@ function VendorList(){
             getContractEndDate: hasLength({ min: 2, max: 100 }, 'Contract End Date must be 2-10 characters long'),
         },
     });
-
     const handleFilter = (values) => {
+        const filters = {
+            sortBy: values.sortBy.trim() || "",
+            sortMode: values.sortMode.trim() || "",
+            filterBy: values.filterBy.trim() || "",
+            filterVal: values.filterVal.trim() || "",
+        };
+        setFilterParams(filters);
         setPage(1);
-        setFilterParams(values);
         setOpenModalThree(false);
     };
 
@@ -271,6 +287,12 @@ function VendorList(){
                         </Group>
                     </form>
                 </Modal>}
+            <Button
+                className="filterBottle"
+                onClick={clearFilter}
+            >
+                Clear
+            </Button>
             {openModalTwo && updatedVendor && (
                 <Modal
                     closeModal={setOpenModalTwo}

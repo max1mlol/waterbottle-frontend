@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {Button, Group, Table, TextInput, Select, Pagination} from "@mantine/core";
-import {hasLength, isOneOf, useForm} from "@mantine/form";
+import {hasLength, useForm} from "@mantine/form";
 import Modal from "./Components/Modal.jsx";
 import {BACKEND_BASEPATH} from "./constants.ts";
 
@@ -41,9 +41,6 @@ function BottleList(){
             sortMode: "",
             filterBy: "",
             filterVal: ""
-        },
-        validate: {
-            //validate
         }
     });
 
@@ -52,7 +49,7 @@ function BottleList(){
             page: (pageNumber - 1).toString(),
             pageSize: pageSize.toString(),
             sortBy: filters.sortBy || "",
-            sortMode: filters. sortMode || "",
+            sortMode: filters.sortMode || "",
             filterBy: filters.filterBy || "",
             filterVal: filters.filterVal || ""
         });
@@ -108,8 +105,14 @@ function BottleList(){
             .catch(error => console.log(error));
     }
     const handleFilter = (values) => {
+        const filters = {
+            sortBy: values.sortBy.trim() || "",
+            sortMode: values.sortMode.trim() || "",
+            filterBy: values.filterBy.trim() || "",
+            filterVal: values.filterVal.trim() || "",
+        };
+        setFilterParams(filters);
         setPage(1);
-        setFilterParams(values);
         setOpenModalThree(false);
     };
 
@@ -152,6 +155,18 @@ function BottleList(){
             filterVal: filterParams.filterVal,
         });
         setOpenModalThree(true);
+    }
+
+    const clearFilter = () => {
+        const emptyFilters = {
+            sortBy: "",
+            sortMode: "",
+            filterBy: "",
+            filterVal: "",
+        };
+        setFilterParams(emptyFilters);
+        setPage(1);
+        formOfFilter.setValues(emptyFilters)
     }
     const rows = bottleList.map((bottle) => (
         <Table.Tr key={bottle.id}>
@@ -246,35 +261,37 @@ function BottleList(){
                             label="sortBy"
                             withAsterisk
                             mt="md"
-                            key={formOfFilter.key('sortBy')}
                             {...formOfFilter.getInputProps('sortBy')}
                         />
                         <TextInput
                             label="sortMode"
                             withAsterisk
                             mt="md"
-                            key={formOfFilter.key('sortMode')}
                             {...formOfFilter.getInputProps('sortMode')}
                         />
                         <TextInput
                             label="filterBy"
                             withAsterisk
                             mt="md"
-                            key={formOfFilter.key('filterBy')}
                             {...formOfFilter.getInputProps('filterBy')}
                         />
                         <TextInput
                             label="filterVal"
                             withAsterisk
                             mt="md"
-                            key={formOfFilter.key('filterVal')}
                             {...formOfFilter.getInputProps('filterVal')}
                         />
-                        <Group justify="flex-end" mt="md">
+                        <Group justify="flex-end" mt="md">'
                             <Button type="submit">Apply Filter</Button>
                         </Group>
                     </form>
                 </Modal>}
+            <Button
+                className="filterBottle"
+                onClick={clearFilter}
+            >
+                Clear
+            </Button>
             {openModalTwo && updatedBottle && (
                 <Modal
                     closeModal={setOpenModalTwo}
@@ -287,7 +304,7 @@ function BottleList(){
                                 value: vendor.id.toString(),
                                 label: vendor.name,
                             }))}
-                            {...updateForm.getInputProps("vendorId")}
+                            {...updateForm.getInputProps('vendorId')}
                         />
                         <TextInput
                             label="brand"
