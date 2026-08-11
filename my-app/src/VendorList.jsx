@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {Button, Group, Pagination, Table, TextInput} from "@mantine/core";
+import {Button, Group, Pagination, Paper, Table, TextInput} from "@mantine/core";
 import {Link} from "react-router-dom";
 import Modal from "./Components/Modal.jsx"
 import {hasLength, useForm} from "@mantine/form";
@@ -249,7 +249,8 @@ function VendorList(){
                 Filter
             </Button>
             {openModalThree &&
-                <Modal
+                <Paper
+                    shadow="xs" radius="xl" p="xl"
                     closeModal={setOpenModalThree}
                     title = "Filter"
                 >
@@ -286,7 +287,7 @@ function VendorList(){
                             <Button type="submit">Apply Filter</Button>
                         </Group>
                     </form>
-                </Modal>}
+                </Paper>}
             <Button
                 className="filterBottle"
                 onClick={clearFilter}

@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {Button, Group, Table, TextInput, Select, Pagination} from "@mantine/core";
+import {Button, Group, Table, TextInput, Select, Pagination, Paper} from "@mantine/core";
 import {hasLength, useForm} from "@mantine/form";
 import Modal from "./Components/Modal.jsx";
 import {BACKEND_BASEPATH} from "./constants.ts";
@@ -252,7 +252,8 @@ function BottleList(){
                 Filter
             </Button>
             {openModalThree &&
-                <Modal
+                <Paper
+                    shadow="xs" radius="xl" p="xl"
                     closeModal={setOpenModalThree}
                     title = "Filter"
                 >
@@ -285,7 +286,7 @@ function BottleList(){
                             <Button type="submit">Apply Filter</Button>
                         </Group>
                     </form>
-                </Modal>}
+                </Paper>}
             <Button
                 className="filterBottle"
                 onClick={clearFilter}
