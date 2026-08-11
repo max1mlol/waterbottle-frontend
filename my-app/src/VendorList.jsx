@@ -14,6 +14,8 @@ function VendorList(){
     const [updatedVendor, setUpdatedVendor] = useState(null);
     const [totalPages, setTotalPages] = useState(1);
     const [page, setPage] = useState(1);
+    const [order, setOrder] = useState("ASC");
+
 
     const handleSubmit = (values) => {
         fetch("http://localhost:8080/vendors", {method: "POST",   headers: {
@@ -29,16 +31,12 @@ function VendorList(){
     }
 
     const [filterParams, setFilterParams] = useState({
-        sortBy: "",
-        sortMode: "",
         filterBy: "",
         filterVal: ""
     });
     const formOfFilter = useForm({
         mode: 'uncontrolled',
         initialValues: {
-            sortBy: "",
-            sortMode: "",
             filterBy: "",
             filterVal: ""
         },
@@ -83,8 +81,6 @@ function VendorList(){
     }
     const openFilterModal = (filterParams) => {
         formOfFilter.setValues({
-            sortBy: filterParams.sortBy,
-            sortMode: filterParams.sortMode,
             filterBy: filterParams.filterBy,
             filterVal: filterParams.filterVal,
         });
@@ -92,8 +88,6 @@ function VendorList(){
     }
     const clearFilter = () => {
         const emptyFilters = {
-            sortBy: "",
-            sortMode: "",
             filterBy: "",
             filterVal: "",
         };
@@ -144,8 +138,6 @@ function VendorList(){
     });
     const handleFilter = (values) => {
         const filters = {
-            sortBy: values.sortBy.trim() || "",
-            sortMode: values.sortMode.trim() || "",
             filterBy: values.filterBy.trim() || "",
             filterVal: values.filterVal.trim() || "",
         };
@@ -158,8 +150,6 @@ function VendorList(){
         const params = new URLSearchParams({
             page: (pageNumber - 1).toString(),
             pageSize: pageSize.toString(),
-            sortBy: filters.sortBy || "",
-            sortMode: filters. sortMode || "",
             filterBy: filters.filterBy || "",
             filterVal: filters.filterVal || ""
         });
@@ -191,6 +181,23 @@ function VendorList(){
             getContractEndDate: hasLength({ min: 2, max: 100 }, 'Contract End Date must be 2-10 characters long'),
         },
     });
+
+    const sorting = (col) => {
+        if (order === "ASC"){
+            const sorted = [...vendorList].sort((a,b) =>
+                a[col].toLowerCase() > b[col].toLowerCase() ? 1 : -1
+            );
+            setVendorList(sorted);
+            setOrder("DSC");
+        }
+        if (order === "DSC"){
+            const sorted = [...vendorList].sort((a,b) =>
+                a[col].toLowerCase() < b[col].toLowerCase() ? 1 : -1
+            );
+            setVendorList(sorted);
+            setOrder("ASC");
+        }
+    }
     return (
         <>
 
@@ -254,22 +261,7 @@ function VendorList(){
                     closeModal={setOpenModalThree}
                     title = "Filter"
                 >
-                    <form onSubmit={formOfFilter.onSubmit(handleFilter)}>
-                        <TextInput
-                            label="sortBy"
-                            withAsterisk
-                            mt="md"
-                            key={formOfFilter.key('sortBy')}
-                            {...formOfFilter.getInputProps('sortBy')}
-                        />
-                        <TextInput
-                            label="sortMode"
-                            withAsterisk
-                            mt="md"
-                            key={formOfFilter.key('sortMode')}
-                            {...formOfFilter.getInputProps('sortMode')}
-                        />
-                        <TextInput
+                    <form onSubmit={formOfFilter.onSubmit(handleFilter)}>                        <TextInput
                             label="filterBy"
                             withAsterisk
                             mt="md"
@@ -338,11 +330,11 @@ function VendorList(){
                 <Table.Thead>
                     <Table.Tr>
                         <Table.Th>update</Table.Th>
-                        <Table.Th>id</Table.Th>
-                        <Table.Th>name</Table.Th>
-                        <Table.Th>registrationNumber</Table.Th>
-                        <Table.Th>contractSignedDate</Table.Th>
-                        <Table.Th>getContractEndDate</Table.Th>
+                        <Table.Th onClick={() => sorting("id")}>id</Table.Th>
+                        <Table.Th onClick={() => sorting("name")}>name</Table.Th>
+                        <Table.Th onClick={() => sorting("registrationNumber")}>registrationNumber</Table.Th>
+                        <Table.Th onClick={() => sorting("contractSignedDate")}>contractSignedDate</Table.Th>
+                        <Table.Th onClick={() => sorting("getContractEndDate")}>getContractEndDate</Table.Th>
                         <Table.Th>delete</Table.Th>
                     </Table.Tr>
                 </Table.Thead>

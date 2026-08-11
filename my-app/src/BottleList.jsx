@@ -13,9 +13,8 @@ function BottleList(){
     const [openModalTwo, setOpenModalTwo] = useState(false);
     const [openModalThree, setOpenModalThree] = useState(false);
     const [updatedBottle, setUpdatedBottle] = useState(null);
+    const [order, setOrder] = useState("ASC");
     const [filterParams, setFilterParams] = useState({
-        sortBy: "",
-        sortMode: "",
         filterBy: "",
         filterVal: ""
     });
@@ -37,8 +36,6 @@ function BottleList(){
     const formOfFilter = useForm({
         mode: 'uncontrolled',
         initialValues: {
-            sortBy: "",
-            sortMode: "",
             filterBy: "",
             filterVal: ""
         }
@@ -48,8 +45,6 @@ function BottleList(){
         const params = new URLSearchParams({
             page: (pageNumber - 1).toString(),
             pageSize: pageSize.toString(),
-            sortBy: filters.sortBy || "",
-            sortMode: filters.sortMode || "",
             filterBy: filters.filterBy || "",
             filterVal: filters.filterVal || ""
         });
@@ -106,8 +101,6 @@ function BottleList(){
     }
     const handleFilter = (values) => {
         const filters = {
-            sortBy: values.sortBy.trim() || "",
-            sortMode: values.sortMode.trim() || "",
             filterBy: values.filterBy.trim() || "",
             filterVal: values.filterVal.trim() || "",
         };
@@ -149,8 +142,6 @@ function BottleList(){
     }
     const openFilterModal = (filterParams) => {
         formOfFilter.setValues({
-            sortBy: filterParams.sortBy,
-            sortMode: filterParams.sortMode,
             filterBy: filterParams.filterBy,
             filterVal: filterParams.filterVal,
         });
@@ -159,8 +150,6 @@ function BottleList(){
 
     const clearFilter = () => {
         const emptyFilters = {
-            sortBy: "",
-            sortMode: "",
             filterBy: "",
             filterVal: "",
         };
@@ -189,6 +178,22 @@ function BottleList(){
         </Table.Tr>
     ));
 
+    const sorting = (col) => {
+        if (order === "ASC"){
+            const sorted = [...bottleList].sort((a,b) =>
+            a[col].toLowerCase() > b[col].toLowerCase() ? 1 : -1
+            );
+            setBottleList(sorted);
+            setOrder("DSC");
+        }
+        if (order === "DSC"){
+            const sorted = [...bottleList].sort((a,b) =>
+            a[col].toLowerCase() < b[col].toLowerCase() ? 1 : -1
+            );
+            setBottleList(sorted);
+            setOrder("ASC");
+        }
+    }
     return (
         <>
             <Button
@@ -259,18 +264,6 @@ function BottleList(){
                 >
                     <form onSubmit={formOfFilter.onSubmit(handleFilter)}>
                         <TextInput
-                            label="sortBy"
-                            withAsterisk
-                            mt="md"
-                            {...formOfFilter.getInputProps('sortBy')}
-                        />
-                        <TextInput
-                            label="sortMode"
-                            withAsterisk
-                            mt="md"
-                            {...formOfFilter.getInputProps('sortMode')}
-                        />
-                        <TextInput
                             label="filterBy"
                             withAsterisk
                             mt="md"
@@ -338,12 +331,12 @@ function BottleList(){
                 <Table.Thead>
                     <Table.Tr>
                         <Table.Th>update</Table.Th>
-                        <Table.Th>id</Table.Th>
-                        <Table.Th>brand</Table.Th>
-                        <Table.Th>capacity</Table.Th>
-                        <Table.Th>barcode</Table.Th>
-                        <Table.Th>vendorId</Table.Th>
-                        <Table.Th>vendorName</Table.Th>
+                        <Table.Th onClick={() => sorting("id")}>id</Table.Th>
+                        <Table.Th onClick={() => sorting("brand")}>brand</Table.Th>
+                        <Table.Th onClick={() => sorting("capacity")}>capacity</Table.Th>
+                        <Table.Th onClick={() => sorting("barcode")}>barcode</Table.Th>
+                        <Table.Th onClick={() => sorting("vendorId")}>vendorId</Table.Th>
+                        <Table.Th onClick={() => sorting("vendorName")}>vendorName</Table.Th>
                         <Table.Th>delete</Table.Th>
                     </Table.Tr>
                 </Table.Thead>
