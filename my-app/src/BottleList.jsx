@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {Button, Group, Table, TextInput, Select, Pagination, Paper} from "@mantine/core";
+import {Button, Group, Table, TextInput, Select, Pagination, Paper, Notification} from "@mantine/core";
 import {hasLength, useForm} from "@mantine/form";
 import Modal from "./Components/Modal.jsx";
 import {BACKEND_BASEPATH} from "./constants.ts";
@@ -49,7 +49,7 @@ function BottleList(){
             filterBy: filters.filterBy || "",
             filterVal: filters.filterVal || "",
             sortBy: sortBy,
-            order: order
+            sortMode: order
         });
 
         fetch(`${BACKEND_BASEPATH}/water-bottles?${params.toString()}`)
@@ -334,7 +334,11 @@ function BottleList(){
                 <Table.Thead>
                     <Table.Tr>
                         <Table.Th>update</Table.Th>
-                        <Table.Th onClick={() => sorting("id")}>id</Table.Th>
+                        <Table.Th
+                            onClick={() => sorting("id")}
+                        >
+                            id
+                        </Table.Th>
                         <Table.Th onClick={() => sorting("brand")}>brand</Table.Th>
                         <Table.Th onClick={() => sorting("capacity")}>capacity</Table.Th>
                         <Table.Th onClick={() => sorting("barcode")}>barcode</Table.Th>

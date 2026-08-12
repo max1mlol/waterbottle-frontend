@@ -1,4 +1,5 @@
 import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 import {BrowserRouter, BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import {createTheme, MantineProvider} from '@mantine/core';
 import Home from "./Home.jsx";
@@ -8,7 +9,7 @@ import NotFound from "./NotFound.jsx";
 import NavBar from "./NavBar.jsx";
 import BottleList from "./BottleList.jsx";;
 import BoxList from "./BoxList.jsx";
-
+import {Notifications} from "@mantine/notifications";
 const theme = createTheme({
     fontFamily: 'Open Sans, sans-serif',
     primaryColor: 'gray',
@@ -27,6 +28,7 @@ export default function App() {
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </BrowserRouter>
+            <Notifications />
         </MantineProvider>
         )
 }
