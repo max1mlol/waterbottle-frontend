@@ -154,7 +154,7 @@ function VendorList(){
             filterBy: filters.filterBy || "",
             filterVal: filters.filterVal || "",
             sortBy: sortBy,
-            order: order
+            sortMode: order
         });
 
         fetch(`${BACKEND_BASEPATH}/vendors?${params.toString()}`)
