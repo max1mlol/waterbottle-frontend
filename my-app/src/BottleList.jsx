@@ -13,6 +13,7 @@ function BottleList(){
     const [openModalTwo, setOpenModalTwo] = useState(false);
     const [openModalThree, setOpenModalThree] = useState(false);
     const [updatedBottle, setUpdatedBottle] = useState(null);
+    const [sortBy, setSortBy] = useState("id");
     const [order, setOrder] = useState("ASC");
     const [filterParams, setFilterParams] = useState({
         filterBy: "",
@@ -46,7 +47,9 @@ function BottleList(){
             page: (pageNumber - 1).toString(),
             pageSize: pageSize.toString(),
             filterBy: filters.filterBy || "",
-            filterVal: filters.filterVal || ""
+            filterVal: filters.filterVal || "",
+            sortBy: sortBy,
+            order: order
         });
 
         fetch(`${BACKEND_BASEPATH}/water-bottles?${params.toString()}`)
@@ -111,7 +114,7 @@ function BottleList(){
 
     useEffect(() => {
         fetchBottles(page, filterParams);
-    }, [page, filterParams]);
+    }, [page, filterParams, sortBy, order]);
 
     const handleDelete = (id) => {
         fetch(`${BACKEND_BASEPATH}/water-bottles/${id}`,
@@ -177,22 +180,22 @@ function BottleList(){
             </Table.Td>
         </Table.Tr>
     ));
-
     const sorting = (col) => {
-        if (order === "ASC"){
-            const sorted = [...bottleList].sort((a,b) =>
-            a[col].toLowerCase() > b[col].toLowerCase() ? 1 : -1
-            );
-            setBottleList(sorted);
-            setOrder("DSC");
+        if(sortBy === col){
+            setOrder(prev => {
+                if(prev === "ASC"){
+                    return "DESC";
+                }
+                else {
+                    return "ASC";
+                }
+            });
         }
-        if (order === "DSC"){
-            const sorted = [...bottleList].sort((a,b) =>
-            a[col].toLowerCase() < b[col].toLowerCase() ? 1 : -1
-            );
-            setBottleList(sorted);
-            setOrder("ASC");
+        else {
+            setSortBy(col);
+            setOrder("ASC")
         }
+        setPage(1);
     }
     return (
         <>

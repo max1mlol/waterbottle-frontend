@@ -14,6 +14,7 @@ function VendorList(){
     const [updatedVendor, setUpdatedVendor] = useState(null);
     const [totalPages, setTotalPages] = useState(1);
     const [page, setPage] = useState(1);
+    const [sortBy, setSortBy] = useState("id");
     const [order, setOrder] = useState("ASC");
 
 
@@ -151,7 +152,9 @@ function VendorList(){
             page: (pageNumber - 1).toString(),
             pageSize: pageSize.toString(),
             filterBy: filters.filterBy || "",
-            filterVal: filters.filterVal || ""
+            filterVal: filters.filterVal || "",
+            sortBy: sortBy,
+            order: order
         });
 
         fetch(`${BACKEND_BASEPATH}/vendors?${params.toString()}`)
@@ -164,7 +167,7 @@ function VendorList(){
     };
     useEffect(() => {
         fetchVendors(page, filterParams);
-    }, [page, filterParams]);
+    }, [page, filterParams, sortBy, order]);
     const updateForm = useForm({
         mode: 'uncontrolled',
         initialValues: {
@@ -183,20 +186,21 @@ function VendorList(){
     });
 
     const sorting = (col) => {
-        if (order === "ASC"){
-            const sorted = [...vendorList].sort((a,b) =>
-                a[col].toLowerCase() > b[col].toLowerCase() ? 1 : -1
-            );
-            setVendorList(sorted);
-            setOrder("DSC");
+        if(sortBy === col){
+            setOrder(prev => {
+                if(prev === "ASC"){
+                    return "DESC";
+                }
+                else {
+                    return "ASC";
+                }
+            });
         }
-        if (order === "DSC"){
-            const sorted = [...vendorList].sort((a,b) =>
-                a[col].toLowerCase() < b[col].toLowerCase() ? 1 : -1
-            );
-            setVendorList(sorted);
-            setOrder("ASC");
+        else {
+            setSortBy(col);
+            setOrder("ASC")
         }
+        setPage(1);
     }
     return (
         <>
@@ -261,7 +265,8 @@ function VendorList(){
                     closeModal={setOpenModalThree}
                     title = "Filter"
                 >
-                    <form onSubmit={formOfFilter.onSubmit(handleFilter)}>                        <TextInput
+                    <form onSubmit={formOfFilter.onSubmit(handleFilter)}>
+                        <TextInput
                             label="filterBy"
                             withAsterisk
                             mt="md"
