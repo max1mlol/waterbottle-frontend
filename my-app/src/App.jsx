@@ -22,7 +22,7 @@ export default function App() {
                 <Routes>
                     <Route exact path="/" element={<Home />} />
                     <Route path="/Vendor" element={<VendorList />} />
-                    <Route path="/Vendor/:id" element={<VendorDetail />} />
+                    <Route path="/vendor/bottle/:id" element={<VendorDetail />} />
                     <Route path="/Bottle" element={<BottleList />} />
                     <Route path="/Box" element={<BoxList />} />
                     <Route path="*" element={<NotFound />} />

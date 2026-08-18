@@ -19,13 +19,11 @@ function BoxList(){
             length: "",
             width: "",
             height: "",
-            volume: ""
         },
         validate: {
-            length: (value) => {Number(value) > 0 ? null : "Capacity must be greater than 0"},
-            width: (value) => {Number(value) > 0 ? null : "Capacity must be greater than 0"},
-            height: (value) => {Number(value) > 0 ? null : "Capacity must be greater than 0"},
-            volume: (value) => {Number(value) > 0 ? null : "Capacity must be greater than 0"},
+            length: (value) => {return Number(value) > 0 ? null : "Capacity must be greater than 0"},
+            width: (value) => {return Number(value) > 0 ? null : "Capacity must be greater than 0"},
+            height: (value) => {return Number(value) > 0 ? null : "Capacity must be greater than 0"},
         },
     });
 
@@ -46,18 +44,16 @@ function BoxList(){
             length: "",
             width: "",
             height: "",
-            volume: ""
         },
         validate: {
-            length: (value) => {Number(value) > 0 ? null : "Capacity must be greater than 0"},
-            width: (value) => {Number(value) > 0 ? null : "Capacity must be greater than 0"},
-            height: (value) => {Number(value) > 0 ? null : "Capacity must be greater than 0"},
-            volume: (value) => {Number(value) > 0 ? null : "Capacity must be greater than 0"},
+            length: (value) => {return Number(value) > 0 ? null : "Length must be greater than 0"},
+            width: (value) => {return Number(value) > 0 ? null : "Width must be greater than 0"},
+            height: (value) => {return Number(value) > 0 ? null : "Height must be greater than 0"},
         },
     });
 
     const handleSubmit = (values) => {
-        fetch("${BACKEND_BASEPATH}/boxes",
+        fetch(`${BACKEND_BASEPATH}/boxes`,
             {
                 method: "POST",
                 headers: { "Content-Type": "application/json", },
@@ -104,7 +100,6 @@ function BoxList(){
             length: box.length,
             width: box.width,
             height: box.height,
-            volume: box.volume,
         });
         setOpenModalTwo(true);
     }
@@ -219,13 +214,6 @@ function BoxList(){
                             mt="md"
                             key={updateForm.key('height')}
                             {...updateForm.getInputProps('height')}
-                        />
-                        <TextInput
-                            label="volume"
-                            withAsterisk
-                            mt="md"
-                            key={updateForm.key('volume')}
-                            {...updateForm.getInputProps('volume')}
                         />
                         <Group justify="flex-end" mt="md">
                             <Button type="submit">Update Box</Button>

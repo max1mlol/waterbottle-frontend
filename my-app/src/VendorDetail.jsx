@@ -4,10 +4,8 @@ import {Table} from "@mantine/core";
 import {BACKEND_BASEPATH} from "./constants.ts";
 
 function VendorDetail() {
-    console.log("VENDOR LIST")
     const { id } = useParams();
     const [vendorDetail, setVendorDetail] = useState([])
-    console.log('render')
     useEffect(() => {
         fetch(`${BACKEND_BASEPATH}/vendors/bottle/${id}`)
             .then(response => response.json())

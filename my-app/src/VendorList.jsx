@@ -76,7 +76,7 @@ function VendorList(){
             name: vendor.name,
             registrationNumber: vendor.registrationNumber,
             contractSignedDate: vendor.contractSignedDate,
-            getContractEndDate: vendor.getContractEndDate,
+            contractEndDate: vendor.contractEndDate,
         });
         setOpenModalTwo(true);
     }
@@ -98,7 +98,7 @@ function VendorList(){
     }
     const rows = vendorList.map((vendor) => {
         const timeStart = dayjs(vendor.contractSignedDate).format('YYYY-MM-DD');
-        const timeEnd = dayjs(vendor.getContractEndDate).format('YYYY-MM-DD');
+        const timeEnd = dayjs(vendor.contractEndDate).format('YYYY-MM-DD');
         return (
             <Table.Tr key={vendor.id}>
                 <Table.Td>
@@ -106,7 +106,7 @@ function VendorList(){
                         Update
                     </Button>
                 </Table.Td>
-                <Table.Td><Link to={`/Vendor/${vendor.id}`}>{vendor.id}</Link></Table.Td>
+                <Table.Td><Link to={`/vendor/bottle/${vendor.id}`}>{vendor.id}</Link></Table.Td>
                 <Table.Td>{vendor.name}</Table.Td>
                 <Table.Td>{vendor.registrationNumber}</Table.Td>
                 <Table.Td>{timeStart}</Table.Td>
@@ -127,14 +127,14 @@ function VendorList(){
             name: "",
             registrationNumber: "",
             contractSignedDate: "",
-            getContractEndDate: "",
+            contractEndDate: "",
         },
 
         validate: {
             name: hasLength({ min: 2, max: 10 }, 'Name must be 2-10 characters long'),
             registrationNumber: hasLength({ min: 2, max: 10 }, 'Registration Number must be 2-10 characters long'),
             contractSignedDate: hasLength({ min: 2, max: 100 }, 'Contract Signed Date must be 2-10 characters long'),
-            getContractEndDate: hasLength({ min: 2, max: 100 }, 'Contract End Date must be 2-10 characters long'),
+            contractEndDate: hasLength({ min: 2, max: 100 }, 'Contract End Date must be 2-10 characters long'),
         },
     });
     const handleFilter = (values) => {
@@ -174,14 +174,14 @@ function VendorList(){
             name: "",
             registrationNumber: "",
             contractSignedDate: "",
-            getContractEndDate: "",
+            contractEndDate: "",
         },
 
         validate: {
             name: hasLength({ min: 2, max: 10 }, 'Name must be 2-10 characters long'),
             registrationNumber: hasLength({ min: 2, max: 10 }, 'Registration Number must be 2-10 characters long'),
             contractSignedDate: hasLength({ min: 2, max: 100 }, 'Contract Signed Date must be 2-10 characters long'),
-            getContractEndDate: hasLength({ min: 2, max: 100 }, 'Contract End Date must be 2-10 characters long'),
+            contractEndDate: hasLength({ min: 2, max: 100 }, 'Contract End Date must be 2-10 characters long'),
         },
     });
 
@@ -243,8 +243,8 @@ function VendorList(){
                             label="Contract End Date"
                             withAsterisk
                             mt="md"
-                            key={form.key('getContractEndDate')}
-                            {...form.getInputProps('getContractEndDate')}
+                            key={form.key('contractEndDate')}
+                            {...form.getInputProps('contractEndDate')}
                         />
 
                         <Group justify="flex-end" mt="md">
@@ -321,8 +321,8 @@ function VendorList(){
                             label="Contract End Date"
                             withAsterisk
                             mt="md"
-                            key={updateForm.key('getContractEndDate')}
-                            {...updateForm.getInputProps('getContractEndDate')}
+                            key={updateForm.key('contractEndDate')}
+                            {...updateForm.getInputProps('contractEndDate')}
                         />
 
                         <Group justify="flex-end" mt="md">
@@ -339,7 +339,7 @@ function VendorList(){
                         <Table.Th onClick={() => sorting("name")}>name</Table.Th>
                         <Table.Th onClick={() => sorting("registrationNumber")}>registrationNumber</Table.Th>
                         <Table.Th onClick={() => sorting("contractSignedDate")}>contractSignedDate</Table.Th>
-                        <Table.Th onClick={() => sorting("getContractEndDate")}>getContractEndDate</Table.Th>
+                        <Table.Th onClick={() => sorting("contractEndDate")}>contractEndDate</Table.Th>
                         <Table.Th>delete</Table.Th>
                     </Table.Tr>
                 </Table.Thead>

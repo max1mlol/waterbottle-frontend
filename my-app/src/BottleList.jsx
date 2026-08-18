@@ -30,8 +30,8 @@ function BottleList(){
         validate: {
             vendorId: hasLength({ min: 1, max: 10 }, 'Vendor Id must be 1-10 characters long'),
             brand: hasLength({ min: 1, max: 10 }, 'Brand must be 1-10 characters long'),
-            capacity: hasLength({ min: 1, max: 100 }, 'Contract Signed Date must be 1-10 characters long'),
-            barcode: hasLength({ min: 2, max: 100 }, 'Contract End Date must be 2-10 characters long'),
+            capacity: (value) => {return Number(value) > 0 ? null : "Capacity must be greater than 0"},
+            barcode: hasLength({ min: 2, max: 100 }, 'Barcode must be 2-10 characters long'),
         },
     });
     const formOfFilter = useForm({
@@ -71,7 +71,7 @@ function BottleList(){
         validate: {
             vendorId: hasLength({ min: 1, max: 10 }, 'Vendor Id must be 1-10 characters long'),
             brand: hasLength({ min: 1, max: 10 }, 'Brand must be 1-10 characters long'),
-            capacity: (value) => {Number(value) > 0 ? null : "Capacity must be greater than 0"},
+            capacity: (value) => {return Number(value) > 0 ? null : "Capacity must be greater than 0"},
             barcode: hasLength({ min: 2, max: 100 }, 'Barcode must be 2-10 characters long'),
         }
     });
