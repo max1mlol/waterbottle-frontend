@@ -5,6 +5,7 @@ import Modal from "./Components/Modal.jsx"
 import {hasLength, useForm} from "@mantine/form";
 import dayjs from 'dayjs';
 import {BACKEND_BASEPATH} from "./constants.ts";
+
 function VendorList(){
     const pageSize = 5;
     const [vendorList, setVendorList] = useState([])
@@ -16,17 +17,17 @@ function VendorList(){
     const [page, setPage] = useState(1);
     const [sortBy, setSortBy] = useState("id");
     const [order, setOrder] = useState("ASC");
-
+    const [refetchFlag, setRefetchFlag] = useState(false);
 
     const handleSubmit = (values) => {
-        fetch("http://localhost:8080/vendors", {method: "POST",   headers: {
+        fetch(`${BACKEND_BASEPATH}/vendors`, {method: "POST",   headers: {
                 "Content-Type": "application/json",
             }, body: JSON.stringify(values),
         })
             .then(response => response.json())
             .then(result => {
-                setVendorList((prev) => [...prev, result.data]);
-                setOpenModal(false);
+                setVendorList((prev) => [...prev, result]);
+                setOpenModal(false)
             })
             .catch(error => console.log(error));
     }
@@ -56,7 +57,10 @@ function VendorList(){
                 body: JSON.stringify(values)
             })
             .then(response => response.json())
-            .then(result => setVendorList(result.data))
+            .then(result => {
+                setRefetchFlag(!refetchFlag);
+                openUpdateModal(false);
+            })
             .catch(error => console.log(error));
     }
 
@@ -165,9 +169,11 @@ function VendorList(){
             })
             .catch(error => console.log(error));
     };
+
     useEffect(() => {
         fetchVendors(page, filterParams);
-    }, [page, filterParams, sortBy, order]);
+    }, [page, filterParams, sortBy, order, refetchFlag]);
+
     const updateForm = useForm({
         mode: 'uncontrolled',
         initialValues: {
@@ -246,9 +252,8 @@ function VendorList(){
                             key={form.key('contractEndDate')}
                             {...form.getInputProps('contractEndDate')}
                         />
-
                         <Group justify="flex-end" mt="md">
-                            <Button type="submit">Update Vendor</Button>
+                            <Button type="submit">Create Vendor</Button>
                         </Group>
                     </form>
                 </Modal>
@@ -326,7 +331,7 @@ function VendorList(){
                         />
 
                         <Group justify="flex-end" mt="md">
-                            <Button type="submit">Create Vendor</Button>
+                            <Button type="submit">Update Vendor</Button>
                         </Group>
                     </form>
                 </Modal>
