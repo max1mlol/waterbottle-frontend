@@ -83,6 +83,7 @@ function VendorList(){
             contractEndDate: vendor.contractEndDate,
         });
         setOpenModalTwo(true);
+
     }
     const openFilterModal = (filterParams) => {
         formOfFilter.setValues({
@@ -110,7 +111,7 @@ function VendorList(){
                         Update
                     </Button>
                 </Table.Td>
-                <Table.Td><Link to={`/vendor/bottle/${vendor.id}`}>{vendor.id}</Link></Table.Td>
+                <Table.Td><Link to={`/vendors/${vendor.id}/bottles`}>{vendor.id}</Link></Table.Td>
                 <Table.Td>{vendor.name}</Table.Td>
                 <Table.Td>{vendor.registrationNumber}</Table.Td>
                 <Table.Td>{timeStart}</Table.Td>
@@ -213,7 +214,7 @@ function VendorList(){
 
             <Button
                 className="createVendor"
-                onClick={() => {
+                onClick={() => {""
                     setOpenModal(true);
                 }}
             >

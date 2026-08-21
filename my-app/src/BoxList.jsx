@@ -11,7 +11,10 @@ function BoxList(){
     const [openModal, setOpenModal] = useState(false);
     const [openModalTwo, setOpenModalTwo] = useState(false);
     const [updatedBox, setUpdatedBox] = useState(null);
+    const [sortBy, setSortBy] = useState("id");
+    const [order, setOrder] = useState("ASC");
     const [boxList, setBoxList] = useState([]);
+    const [refetchFlag, setRefetchFlag] = useState(false);
 
     const form = useForm({
         mode: 'uncontrolled',
@@ -27,6 +30,41 @@ function BoxList(){
         },
     });
 
+    const [filterParams, setFilterParams] = useState({
+        filterBy: "",
+        filterVal: ""
+    });
+
+    const formOfFilter = useForm({
+        mode: 'uncontrolled',
+        initialValues: {
+            filterBy: "",
+            filterVal: ""
+        },
+        validate: {
+            //validate
+        }
+    });
+
+    const fetchBoxes = (pageNumber, filters = filterParams) => {
+        const params = new URLSearchParams({
+            page: (pageNumber - 1).toString(),
+            pageSize: pageSize.toString(),
+            filterBy: filters.filterBy || "",
+            filterVal: filters.filterVal || "",
+            sortBy: sortBy,
+            sortMode: order
+        });
+
+        fetch(`${BACKEND_BASEPATH}/boxes?${params.toString()}`)
+            .then(response => response.json())
+            .then(result => {
+                setVendorList(result.data);
+                setTotalPages(Math.ceil(result.total / pageSize));
+            })
+            .catch(error => console.log(error));
+    };
+
     useEffect(() => {
         fetch(
             `${BACKEND_BASEPATH}/boxes?page=${page - 1}&pageSize=${pageSize}`
@@ -37,6 +75,10 @@ function BoxList(){
                 setTotalPages(Math.ceil(result.total / pageSize));
             });
     }, [page]);
+
+    useEffect(() => {
+        fetchBoxes(page, filterParams);
+    }, [page, filterParams, sortBy, order, refetchFlag]);
 
     const updateForm = useForm({
         mode: 'uncontrolled',
@@ -58,15 +100,18 @@ function BoxList(){
                 method: "POST",
                 headers: { "Content-Type": "application/json", },
                 body: JSON.stringify(values),
+
             })
             .then(response => response.json())
             .then(result => {
-                setBoxList((prev) => [...prev, result.data]);
+                setBoxList((prev) => [...prev, result]);
                 setOpenModal(false);
             })
             .catch(error => console.log(error));
     }
+
     const handleUpdate = (values) => {
+        console.log('handle update');
         fetch(`${BACKEND_BASEPATH}/boxes/${updatedBox.id}`,
             {
                 method: "PUT",
@@ -74,8 +119,12 @@ function BoxList(){
                 body: JSON.stringify(values)
             })
             .then(response => response.json())
-            .then(result => setBoxList(result.data))
+            .then(result => {
+                setRefetchFlag(!refetchFlag);
+            })
             .catch(error => console.log(error));
+        console.log('fetch update');
+
     }
     const handleDelete = (id) => {
         fetch(`${BACKEND_BASEPATH}/boxes/${id}`,
@@ -103,6 +152,17 @@ function BoxList(){
         });
         setOpenModalTwo(true);
     }
+
+    const clearFilter = () => {
+        const emptyFilters = {
+            filterBy: "",
+            filterVal: "",
+        };
+        setFilterParams(emptyFilters);
+        setPage(1);
+        formOfFilter.setValues(emptyFilters)
+    }
+
     const rows = boxList.map((box) => (
         <Table.Tr key={box.id}>
             <Table.Td>
@@ -187,12 +247,12 @@ function BoxList(){
                 >
                     <form onSubmit={updateForm.onSubmit(handleUpdate)}>
                         <Select
-                            label="boxId"
+                            label="vendorId"
                             data={vendorList.map(box => ({
                                 value: box.id.toString(),
                                 label: box.name,
                             }))}
-                            {...updateForm.getInputProps("boxId")}
+                            {...updateForm.getInputProps("vendorId")}
                         />
                         <TextInput
                             label="length"

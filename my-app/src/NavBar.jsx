@@ -14,10 +14,10 @@ export default function NavBar() {
                     <a href="/">Home</a>
                 </li>
                 <li>
-                    <a href="/vendor">Vendor</a>
+                    <a href="/vendors">Vendor</a>
                 </li>
                 <li>
-                    <a href="/bottle">Bottle</a>
+                    <a href="/bottles">Bottle</a>
                 </li>
                 <li>
                     <a href="/box">Box</a>

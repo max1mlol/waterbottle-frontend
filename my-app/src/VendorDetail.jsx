@@ -7,7 +7,7 @@ function VendorDetail() {
     const { id } = useParams();
     const [vendorDetail, setVendorDetail] = useState([])
     useEffect(() => {
-        fetch(`${BACKEND_BASEPATH}/vendors/bottle/${id}`)
+        fetch(`${BACKEND_BASEPATH}/vendors/${id}/bottles`)
             .then(response => response.json())
             .then(result => setVendorDetail(result))
     }, [id])

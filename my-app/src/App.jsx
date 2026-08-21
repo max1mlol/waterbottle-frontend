@@ -21,9 +21,9 @@ export default function App() {
             <BrowserRouter>
                 <Routes>
                     <Route exact path="/" element={<Home />} />
-                    <Route path="/Vendor" element={<VendorList />} />
-                    <Route path="/vendor/bottle/:id" element={<VendorDetail />} />
-                    <Route path="/Bottle" element={<BottleList />} />
+                    <Route path="/Vendors" element={<VendorList />} />
+                    <Route path="/vendors/:id/bottles" element={<VendorDetail />} />
+                    <Route path="/Bottles" element={<BottleList />} />
                     <Route path="/Box" element={<BoxList />} />
                     <Route path="*" element={<NotFound />} />
                 </Routes>
