@@ -78,7 +78,7 @@ function VendorList(){
         setUpdatedVendor(vendor);
         updateForm.setValues({
             name: vendor.name,
-            registrationNumber: vendor.registrationNumber,
+            registrationNumber: String(vendor.registrationNumber),
             contractSignedDate: vendor.contractSignedDate,
             contractEndDate: vendor.contractEndDate,
         });
