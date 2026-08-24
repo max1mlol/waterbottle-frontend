@@ -15,6 +15,7 @@ function BottleList(){
     const [updatedBottle, setUpdatedBottle] = useState(null);
     const [sortBy, setSortBy] = useState("id");
     const [order, setOrder] = useState("ASC");
+    const [refetchFlag, setRefetchFlag] = useState(false);
     const [filterParams, setFilterParams] = useState({
         filterBy: "",
         filterVal: ""
@@ -85,8 +86,8 @@ function BottleList(){
             })
                 .then(response => response.json())
                 .then(result => {
-                    setBottleList((prev) => [...prev, result.data]);
-                    setOpenModal(false);
+                    setBottleList((prev) => [...prev, result]);
+                    setOpenModal(false)
                 })
                 .catch(error => console.log(error));
     }
@@ -99,7 +100,10 @@ function BottleList(){
                 body: JSON.stringify(values)
             })
             .then(response => response.json())
-            .then(result => setBottleList(result.data))
+            .then(result => {
+                setRefetchFlag(!refetchFlag);
+                openUpdateModal(false);
+            })
             .catch(error => console.log(error));
     }
     const handleFilter = (values) => {
@@ -114,7 +118,7 @@ function BottleList(){
 
     useEffect(() => {
         fetchBottles(page, filterParams);
-    }, [page, filterParams, sortBy, order]);
+    }, [page, filterParams, sortBy, order, refetchFlag]);
 
     const handleDelete = (id) => {
         fetch(`${BACKEND_BASEPATH}/water-bottles/${id}`,
@@ -136,7 +140,7 @@ function BottleList(){
     const openUpdateModal = (bottle) => {
         setUpdatedBottle(bottle);
         updateForm.setValues({
-            vendorId: bottle.vendorId.toString(),
+            vendorId: String(bottle.vendorId),
             brand: bottle.brand,
             capacity: bottle.capacity,
             barcode: bottle.barcode,
