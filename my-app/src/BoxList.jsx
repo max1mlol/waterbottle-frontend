@@ -47,6 +47,7 @@ function BoxList(){
     });
 
     const fetchBoxes = (pageNumber, filters = filterParams) => {
+        console.log("FETCHNG Boxes from backend")
         const params = new URLSearchParams({
             page: (pageNumber - 1).toString(),
             pageSize: pageSize.toString(),
@@ -120,6 +121,8 @@ function BoxList(){
             })
             .then(response => response.json())
             .then(result => {
+                console.log("triggering refetch update ")
+                setOpenModalTwo(false);
                 setRefetchFlag(!refetchFlag);
             })
             .catch(error => console.log(error));
@@ -199,18 +202,6 @@ function BoxList(){
                     title="Create Box"
                 >
                     <form onSubmit={form.onSubmit(handleSubmit)}>
-                        <Select
-                            label="vendorId"
-                            withAsterisk
-                            data={
-                                vendorList.map(box => ({
-                                    value: box.id.toString(),
-                                    label: box.name,
-                                }))
-                            }
-                            key={form.key('boxId')}
-                            {...form.getInputProps('boxId')}
-                        />
                         <TextInput
                             label="length"
                             withAsterisk
@@ -246,14 +237,6 @@ function BoxList(){
                     title="Update Box"
                 >
                     <form onSubmit={updateForm.onSubmit(handleUpdate)}>
-                        <Select
-                            label="vendorId"
-                            data={vendorList.map(box => ({
-                                value: box.id.toString(),
-                                label: box.name,
-                            }))}
-                            {...updateForm.getInputProps("vendorId")}
-                        />
                         <TextInput
                             label="length"
                             withAsterisk

@@ -59,7 +59,7 @@ function VendorList(){
             .then(response => response.json())
             .then(result => {
                 setRefetchFlag(!refetchFlag);
-                openUpdateModal(false);
+                setOpenModalTwo(false);
             })
             .catch(error => console.log(error));
     }
