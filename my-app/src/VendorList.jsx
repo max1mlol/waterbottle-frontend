@@ -69,8 +69,9 @@ function VendorList(){
             {
                 method: "DELETE",
             })
-            .then(response =>  response.json())
-            .then(result => setVendorList(result.data))
+            .then(() => {
+                setRefetchFlag(!refetchFlag)
+            })
             .catch(error => console.log(error));
     }
 

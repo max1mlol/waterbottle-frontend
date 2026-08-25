@@ -125,8 +125,9 @@ function BottleList(){
             {
                 method: "DELETE",
             })
-                .then(response =>  response.json())
-                .then(result => setBottleList(result.data))
+            .then(() => {
+                setRefetchFlag(!refetchFlag)
+            })
                 .catch(error => console.log(error));
     }
 

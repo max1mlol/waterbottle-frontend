@@ -47,7 +47,6 @@ function BoxList(){
     });
 
     const fetchBoxes = (pageNumber, filters = filterParams) => {
-        console.log("FETCHNG Boxes from backend")
         const params = new URLSearchParams({
             page: (pageNumber - 1).toString(),
             pageSize: pageSize.toString(),
@@ -60,7 +59,7 @@ function BoxList(){
         fetch(`${BACKEND_BASEPATH}/boxes?${params.toString()}`)
             .then(response => response.json())
             .then(result => {
-                setVendorList(result.data);
+                setBoxList(result.data);
                 setTotalPages(Math.ceil(result.total / pageSize));
             })
             .catch(error => console.log(error));
@@ -112,7 +111,6 @@ function BoxList(){
     }
 
     const handleUpdate = (values) => {
-        console.log('handle update');
         fetch(`${BACKEND_BASEPATH}/boxes/${updatedBox.id}`,
             {
                 method: "PUT",
@@ -121,12 +119,10 @@ function BoxList(){
             })
             .then(response => response.json())
             .then(result => {
-                console.log("triggering refetch update ")
                 setOpenModalTwo(false);
                 setRefetchFlag(!refetchFlag);
             })
             .catch(error => console.log(error));
-        console.log('fetch update');
 
     }
     const handleDelete = (id) => {
@@ -134,8 +130,9 @@ function BoxList(){
             {
                 method: "DELETE",
             })
-            .then(response =>  response.json())
-            .then(result => setBoxList(result.data))
+            .then(() => {
+                setRefetchFlag(!refetchFlag)
+            })
             .catch(error => console.log(error));
     }
 
