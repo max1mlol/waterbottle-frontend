@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import {Button, Group, Table, TextInput, Select, Pagination, Paper, Notification} from "@mantine/core";
 import {hasLength, useForm} from "@mantine/form";
-import Modal from "./Components/Modal.jsx";
+import Modal from "./components/Modal.jsx";
 import {BACKEND_BASEPATH} from "./constants.ts";
 
 function BottleList(){
