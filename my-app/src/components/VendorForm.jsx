@@ -28,6 +28,7 @@ export default function VendorForm({ title, initialValues, closeModal, onSubmit 
                 onSubmit={form.onSubmit((values) => {
                     onSubmit(values);
                     form.reset();
+                    closeModal();
                 })}
             >
                 <TextInput

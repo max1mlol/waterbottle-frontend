@@ -7,13 +7,13 @@ export default function BottleForm({ title, initialValues, closeModal, onSubmit,
     const form = useForm({
         mode: 'uncontrolled',
         initialValues: {
-            vendorId: "",
-            brand: "",
-            capacity: "",
-            barcode: ""
+            vendorId: initialValues?.vendorId ?? '',
+            brand: initialValues?.brand ?? '',
+            capacity: initialValues?.capacity ?? '',
+            barcode: initialValues?.barcode ?? ''
         },
         validate: {
-            vendorId: hasLength({ min: 1, max: 10 }, 'Vendor Id must be 1-10 characters long'),
+            vendorId: '',
             brand: hasLength({ min: 1, max: 10 }, 'Brand must be 1-10 characters long'),
             capacity: (value) => {return Number(value) > 0 ? null : "Capacity must be greater than 0"},
             barcode: hasLength({ min: 2, max: 100 }, 'Barcode must be 2-10 characters long'),
@@ -26,6 +26,7 @@ export default function BottleForm({ title, initialValues, closeModal, onSubmit,
                 onSubmit={form.onSubmit((values) => {
                     onSubmit(values);
                     form.reset();
+                    closeModal();
                 })}
             >
                 <Select

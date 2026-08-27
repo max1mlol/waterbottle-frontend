@@ -7,9 +7,9 @@ export default function BoxForm({ title, initialValues, closeModal, onSubmit }) 
     const form = useForm({
         mode: 'uncontrolled',
         initialValues: {
-            length: "",
-            width: "",
-            height: "",
+            length: initialValues?.length ?? '',
+            width: initialValues?.width ?? '',
+            height: initialValues?.height ?? ''
         },
         validate: {
             length: (value) => {return Number(value) > 0 ? null : "Capacity must be greater than 0"},
@@ -24,6 +24,8 @@ export default function BoxForm({ title, initialValues, closeModal, onSubmit }) 
                 onSubmit={form.onSubmit((values) => {
                     onSubmit(values);
                     form.reset();
+                    closeModal();
+
                 })}
             >
                 <TextInput
