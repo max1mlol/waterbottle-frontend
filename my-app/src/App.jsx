@@ -5,10 +5,10 @@ import {createTheme, MantineProvider} from '@mantine/core';
 import Home from "./Home.jsx";
 import VendorList from "./pages/VendorList.jsx";
 import BoxList from './pages/BoxList.jsx';
-import VendorDetail from "./VendorDetail.jsx";
+import VendorDetail from "./pages/VendorDetail.jsx";
 import NotFound from "./NotFound.jsx";
 import NavBar from "./NavBar.jsx";
-import BottleList from "./BottleList.jsx";
+import BottleList from "./pages/BottleList.jsx";
 import {Notifications} from "@mantine/notifications";
 
 const theme = createTheme({

@@ -1,6 +1,6 @@
 // src/components/BoxForm.jsx
 import {Button, Group, Pagination, Table, TextInput} from '@mantine/core';
-import { hasLength, useForm } from '@mantine/form';
+import { useForm } from '@mantine/form';
 import Modal from './Modal';
 
 export default function BoxForm({ title, initialValues, closeModal, onSubmit }) {

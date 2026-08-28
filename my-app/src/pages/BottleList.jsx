@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {Button, Group, Loader, Pagination, Paper, Select, Table, TextInput} from '@mantine/core';
-import BottleForm from './components/BottleForm';
-import useBottles from './hooks/useBottles';
+import BottleForm from '../components/BottleForm';
+import useBottles from '../hooks/useBottles';
 
 export default function BottleList() {
     const {

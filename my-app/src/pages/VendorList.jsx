@@ -22,7 +22,7 @@ export default function VendorList() {
             <Table.Td>
                 <Button onClick={() => setFormState(vendor)}>Update</Button>
             </Table.Td>
-            <Table.Td><Link to={`/vendor/bottle/${vendor.id}`}>{vendor.id}</Link></Table.Td>
+            <Table.Td><Link to={`/vendors/${vendor.id}/bottles`}>{vendor.id}</Link></Table.Td>
             <Table.Td>{vendor.name}</Table.Td>
             <Table.Td>{vendor.registrationNumber}</Table.Td>
             <Table.Td>{dayjs(vendor.contractSignedDate).format('YYYY-MM-DD')}</Table.Td>

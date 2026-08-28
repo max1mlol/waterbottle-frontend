@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {Button, Group, Pagination, Loader, Table, TextInput, Paper} from "@mantine/core";
 import useBoxes from "../hooks/useBoxes.js";
 import BoxForm from "../components/BoxForm.jsx";
