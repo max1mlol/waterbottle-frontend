@@ -1,1 +1,1 @@
-export const BACKEND_BASEPATH = 'http://localhost:8080';
+export const BACKEND_BASEPATH = 'http://34.136.97.152:8080';
