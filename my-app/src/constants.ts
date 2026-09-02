@@ -1,1 +1,0 @@
-export const BACKEND_BASEPATH = 'http://34.136.97.152:8080';
